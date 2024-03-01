@@ -41,11 +41,11 @@ const defaultSettingStyleArena: SettingStyleArena = localStorage.getItem("settin
 const styleButton = {
 
     height: "30px",
-        backgroundColor: "#252525",
-        color: "white",
-        padding: "4px",
-        borderRadius: "5px",
-        margin: "5px"
+    backgroundColor: "#252525",
+    color: "white",
+    padding: "4px",
+    borderRadius: "5px",
+    margin: "5px"
 
 }
 
@@ -62,7 +62,6 @@ const App = () => {
     const [hiddenInformation, setHiddenInformation] = useState(true)
 
 
-
     useEffect(() => {
         localStorage.setItem("settingGame", JSON.stringify(settingGame))
     }, [settingGame]);
@@ -70,7 +69,7 @@ const App = () => {
         localStorage.setItem("settingStyleArena", JSON.stringify(settingStyleArena))
     }, [settingStyleArena]);
     useEffect(() => {
-        if(!intervalId){
+        if (!intervalId) {
             //const settingTeam = {countTeam: teams.length, }
             localStorage.setItem("settingTeam", JSON.stringify(teams))
         }
@@ -78,13 +77,16 @@ const App = () => {
 
     useEffect(() => {
         if (startedGame) {
-            // let newWhoseMove = 0
-            // if (whoseMove < teams.length - 1) {
-            //     newWhoseMove = whoseMove + 1
-            // }
 
+            let newWhoseMove = 0
 
-            let newWhoseMove = Math.floor(Math.random() * teams.length)
+            if (settingGame.turnOrder == "oneByOne") {
+                if (whoseMove < teams.length - 1) {
+                    newWhoseMove = whoseMove + 1
+                }
+            } else if (settingGame.turnOrder == "random") {
+                newWhoseMove = Math.floor(Math.random() * teams.length)
+            }
 
             setWhoseMove(newWhoseMove)
 
@@ -116,12 +118,23 @@ const App = () => {
         }
     }, [startedGame]);
 
+    useEffect(() => {
+        setTeams({type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: {settingGame: settingGame}})
+    }, [settingGame.height, settingGame.width]);
+
     const setWidthArena = (value: number) => {
-        console.log(value)
         setSettingGame({type: "CHANGE_WIDTH_ARENA", payload: value})
     }
     const setHeightArena = (value: number) => {
         setSettingGame({type: "CHANGE_HEIGHT_ARENA", payload: value})
+    }
+
+
+
+
+
+    const setPixelTeam = (teamId: number, countPixel: number) => {
+        setTeams({type: "CHANGE_COUNT_PIXELS_TEAM", payload: {teamId, countPixel, settingGame: settingGame}})
     }
 
     const setSpeedGame = (value: number) => {
@@ -136,9 +149,7 @@ const App = () => {
     const setCountTeam = (value: number) => {
         setTeams({type: "CHANGE_COUNT_TEAM", payload: {countTeam: value, settingGame: settingGame}})
     }
-    const setPixelTeam = (teamId: number, countPixel: number) => {
-        setTeams({type: "CHANGE_PIXELS_TEAM", payload: {teamId, countPixel, settingGame: settingGame}})
-    }
+
 
     const setBorderStyle = (value: boolean) => {
         setSettingStyleArena({type: "CHANGE_BORDER", payload: value})
@@ -179,34 +190,38 @@ const App = () => {
             </div>
             <div style={{height: "95vh", display: "flex", alignItems: "center"}}>
 
-                <div style={{display: 'flex', gap: "2%", alignItems: "center", width: "100%", justifyContent: "center" }}>
-                        {hiddenInformation && <FormSetting
-                            setBorderStyle={setBorderStyle}
-                            setInfoIndex={setInfoIndex}
-                            setInfoCountPixel={setInfoCountPixel}
-                            setSizeCell={setSizeCell}
-                            setWidthArena={setWidthArena}
-                            setHeightArena={setHeightArena}
-                            setCountTeam={setCountTeam}
-                            setPixelTeam={setPixelTeam}
-                            setContactValue={setContactValue}
-                            setMovedValue={setMovedValue}
-                            setSpeedGame={setSpeedGame}
-                            setInfoLvlPixel={setInfoLvlPixel}
-                            setChangeTurnOrder={setChangeTurnOrder}
+                <div
+                    style={{display: 'flex', gap: "2%", alignItems: "center", width: "100%", justifyContent: "center"}}>
+                    {hiddenInformation && <FormSetting
+                        setBorderStyle={setBorderStyle}
+                        setInfoIndex={setInfoIndex}
+                        setInfoCountPixel={setInfoCountPixel}
+                        setSizeCell={setSizeCell}
+                        setWidthArena={setWidthArena}
+                        setHeightArena={setHeightArena}
+                        setCountTeam={setCountTeam}
+                        setPixelTeam={setPixelTeam}
+                        setContactValue={setContactValue}
+                        setMovedValue={setMovedValue}
+                        setSpeedGame={setSpeedGame}
+                        setInfoLvlPixel={setInfoLvlPixel}
+                        setChangeTurnOrder={setChangeTurnOrder}
 
-                            teams={teams}
-                            settingGame={settingGame}
-                            settingStyleArena={settingStyleArena}
-                        />}
+                        teams={teams}
+                        settingGame={settingGame}
+                        settingStyleArena={settingStyleArena}
+                    />}
 
                     <div>
 
-                        {hiddenInformation && <div style={{textAlign: "center", padding: "8px"}}><Statistics teams={teams} countSteps={countSteps} time={time}/></div>}
+                        {hiddenInformation &&
+                            <div style={{textAlign: "center", padding: "8px"}}><Statistics teams={teams}
+                                                                                           countSteps={countSteps}
+                                                                                           time={time}/></div>}
 
                         <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
                         {hiddenInformation && <div style={{textAlign: "center"}}>
-                            <button style={styleButton} onClick={() => setStartedGame(true) }>Старт</button>
+                            <button style={styleButton} onClick={() => setStartedGame(true)}>Старт</button>
                             <button style={styleButton} onClick={() => setStartedGame(false)}>Пауза</button>
                             <button style={styleButton} onClick={resetGame}>Заново</button>
                         </div>}

@@ -6,17 +6,34 @@ import {getExterminateCloneNoWar, getExterminateCloneYesWar} from "../actionsGam
 
 type Action =
     { type: "CHANGE_COUNT_TEAM", payload: { countTeam: number, settingGame: SettingGame } }
-    | { type: "CHANGE_PIXELS_TEAM", payload: { teamId: number, countPixel: number, settingGame: SettingGame } }
+    | { type: "CHANGE_COUNT_PIXELS_TEAM", payload: { teamId: number, countPixel: number, settingGame: SettingGame } }
     | { type: "MOVE_PIXEL", payload: { whoseMove: number, settingGame: SettingGame } }
     | { type: "RESET_TEAM", payload: { settingGame: SettingGame } }
+    | { type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: { settingGame: SettingGame } }
 
 export const reducerTeam = (state: Team[], action: Action): Team[] => {
     let maxMaxId = Math.max(...state.map(team => team.pixels.map(pixel => pixel.id)).flat())
+    let newTeams: Team[] = []
 
     switch (action.type) {
+        case "CHECK_MAX_COUNT_PIXELS_TEAM":
+            const maxCountPixels = action.payload.settingGame.height * action.payload.settingGame.width / state.length
+
+            newTeams = []
+
+            state.forEach(team => {
+                    let newTeam: Team = {...team}
+                    newTeam.pixels = addPixels(state.length, team.pixels.length >= maxCountPixels ? maxCountPixels : team.pixels.length, team.id, action.payload.settingGame, team.color, maxMaxId)
+                    newTeam.countPixelsStart = team.pixels.length >= maxCountPixels ? maxCountPixels : team.pixels.length
+                    newTeams.push(newTeam)
+                }
+            )
+
+            console.log(newTeams)
+            return newTeams
         case "RESET_TEAM":
             //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
-            let newTeams: Team[] = []
+            newTeams = []
 
             state.forEach(team => {
                     let newTeam: Team = {...team}
@@ -27,7 +44,7 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
 
             return newTeams
         case "CHANGE_COUNT_TEAM":
-            let teams: Team[] = [...state]
+            let teams: Team[] = JSON.parse(JSON.stringify([...state]))
 
             if (state.length > action.payload.countTeam) {
                 teams = state.filter(team => team.id < action.payload.countTeam)
@@ -55,7 +72,7 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
             }
 
             return teams
-        case "CHANGE_PIXELS_TEAM":
+        case "CHANGE_COUNT_PIXELS_TEAM":
             const newPixels = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
 
             return state.map(team => team.id == action.payload.teamId ? {
@@ -66,14 +83,16 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
         case "MOVE_PIXEL":
             let settingGame = action.payload.settingGame
 
-            let defencedTeams = [...state.filter(team => team.id != action.payload.whoseMove)]
+            let defencedTeams: Team[] = JSON.parse(JSON.stringify([...state.filter(team => team.id != action.payload.whoseMove)]))
+
             let teamWalks: Team = {...state.find(team => team.id == action.payload.whoseMove)!}
 
             const indexPixel = Math.floor(Math.random() * teamWalks.pixels.length)
             const movedPixel = teamWalks.pixels[indexPixel]
+
             const newIndex = getMovement(movedPixel.index + 1, settingGame.height, settingGame.width)
 
-            if(newIndex > settingGame.width * settingGame.height){
+            if (newIndex > settingGame.width * settingGame.height) {
                 debugger
             }
 
@@ -141,48 +160,40 @@ const locationDetermination = (numberTeam: number, settingGame: SettingGame, ind
 
 const getMovement = (index: number, arenaHeight: number, arenaWidth: number) => {
     let options: string[] = []
-    let column = Math.ceil(index / arenaWidth)
-    let row = Math.ceil(index % arenaHeight)
+    let row = Math.ceil(index / arenaWidth)
+    let column = Math.ceil(arenaWidth - (row * arenaWidth - index))
 
-    console.log("index", index)
-    console.log("column/arenaWidth", arenaWidth)
-    console.log("row/arenaHeight", arenaHeight)
-
-    console.log("column", column)
-    console.log("row", row)
-
-    if (column !== 0) {
-        options.push("up")
-    }
-    if (row !== 0) {
+    if (column !== 1) {
         options.push("left")
     }
-    if (column !== arenaHeight - 1) {
-        options.push("down")
+    if (row !== 1) {
+        options.push("up")
     }
-    if (row !== arenaWidth - 1) {
+    if (column !== arenaWidth) {
         options.push("right")
     }
+    if (row !== arenaHeight) {
+        options.push("down")
+    }
 
 
-    console.log("options", options)
-
-    switch (options[Math.floor(Math.random() * options.length)]) {
+    const who = options[Math.floor(Math.random() * options.length)]
+    switch (who) {
         case 'left':
-            row--
-            break
-        case 'right':
-            row++
-            break
-        case 'up':
             column--
             break
-        case 'down':
+        case 'right':
             column++
+            break
+        case 'up':
+            row--
+            break
+        case 'down':
+            row++
             break
     }
 
-    return row * arenaWidth + column
+    return row * arenaWidth - (arenaWidth - column) - 1
 }
 
 const addPixels = (countTeam: number, countPixel: number, teamId: number, settingGame: SettingGame, color: number, maxMaxId: number) => {
@@ -200,4 +211,8 @@ const addPixels = (countTeam: number, countPixel: number, teamId: number, settin
     }
 
     return newPixels
+}
+
+const howManyCount = () => {
+    return 123
 }

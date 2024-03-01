@@ -60,9 +60,6 @@ export const FormSetting = ({
 
     }
 
-
-
-
     return (
         <div style={{width: "25%"}}>
             <fieldset>
@@ -155,11 +152,12 @@ export const FormSetting = ({
                 <input
                     type="radio"
                     name="contact"
+                    disabled={true}
                     value="Take"
                     id="take" checked={settingGame.contact == "Take"}
                     onChange={changeContactValue}
                 />
-                <label style={{color: "white"}} htmlFor="take">Забрать в свою команду</label>
+                <label style={{color: "white"}} htmlFor="take">Забрать в свою команду (в разработке)</label>
 
                 <br/>
                 <br/>
@@ -171,7 +169,7 @@ export const FormSetting = ({
 
                 <input type="radio" name="moved" value="Clone" id="clone" checked={settingGame.moved == "Clone"}
                        onChange={changeMovedValue}/>
-                <label style={{color: "white"}} htmlFor="clone">Клонировать (ОЧЕНЬ ДОЛГО)</label>
+                <label style={{color: "white"}} htmlFor="clone">Клонировать (А это вообще может закончиться?)</label>
 
             </fieldset>
             <br/>
@@ -192,12 +190,12 @@ export const FormSetting = ({
                             id={`countPixelTeam_${team.id}`}
                             name={`countPixelTeam_${team.id}`}
                             min="1"
-                            max={settingGame.height * settingGame.width / 2}
+                            max={settingGame.height * settingGame.width / teams.length}
                             value={team.pixels.length}
                             onChange={e => setPixelTeam(team.id, Number(e.target.value))}
                         />
                         <button
-                            onClick={() => setPixelTeam(team.id, settingGame.height * settingGame.width / 2)}>Максимум {settingGame.height * settingGame.width / 2}</button>
+                            onClick={() => setPixelTeam(team.id, settingGame.height * settingGame.width / teams.length)}>Максимум {settingGame.height * settingGame.width / teams.length}</button>
                         <br/>
 
                     </div>
