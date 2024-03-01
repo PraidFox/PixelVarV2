@@ -48,6 +48,7 @@ export const FormSetting = ({
         setMovedValue(event.target.value)
     }
 
+
     return (
         <div style={{width: "30%"}}>
             <fieldset>

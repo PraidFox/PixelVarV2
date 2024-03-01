@@ -7,11 +7,26 @@ type Action =
     { type: "CHANGE_COUNT_TEAM", payload: { countTeam: number, settingGame: SettingGame } }
     | { type: "CHANGE_PIXELS_TEAM", payload: { teamId: number, countPixel: number, settingGame: SettingGame } }
     | { type: "MOVE_PIXEL", payload: { whoseMove: number, settingGame: SettingGame } }
+    | { type: "RESET_TEAM", payload: { settingGame: SettingGame } }
 
 export const reducerTeam = (state: Team[], action: Action): Team[] => {
     let maxMaxId = Math.max(...state.map(team => team.pixels.map(pixel => pixel.id)).flat())
 
     switch (action.type) {
+        case "RESET_TEAM":
+            //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
+            console.log("teams", state)
+
+            let newTeams: Team[] = []
+
+            state.forEach(team => {
+                    let newTeam: Team = {...team}
+                    newTeam.pixels = addPixels(state.length, team.countPixelsStart, team.id, action.payload.settingGame, team.color, maxMaxId)
+                    newTeams.push(newTeam)
+                }
+            )
+
+            return newTeams
         case "CHANGE_COUNT_TEAM":
             let teams: Team[] = [...state]
 
@@ -33,7 +48,8 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
                                 color: color,
                                 type: "solder",
                                 lvl: 1
-                            }]
+                            }],
+                            countPixelsStart: 1,
                         })
                     }
                 }
@@ -41,21 +57,13 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
 
             return teams
         case "CHANGE_PIXELS_TEAM":
-            let newPixels: Pixel[] = []
+            const newPixels = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
 
-            const countTeam = state.length
-
-            for (let i = 0; i < action.payload.countPixel; i++) {
-                newPixels.push({
-                    id: maxMaxId + i,
-                    index: locationDetermination(action.payload.teamId, action.payload.settingGame, i, countTeam),
-                    color: state[action.payload.teamId].color,
-                    type: "solder",
-                    lvl: 1
-                })
-            }
-
-            return state.map(team => team.id == action.payload.teamId ? {...team, pixels: newPixels} : team)
+            return state.map(team => team.id == action.payload.teamId ? {
+                ...team,
+                pixels: newPixels,
+                countPixelsStart: action.payload.countPixel
+            } : team)
         case "MOVE_PIXEL":
             let settingGame = action.payload.settingGame
 
@@ -93,10 +101,9 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
                                             type: movedPixel.type,
                                             lvl: movedPixel.lvl
                                         })
-                                        if( movedPixel.lvl < 100){
+                                        if (movedPixel.lvl < 100) {
                                             movedPixel.lvl = 1
                                         }
-
                                     }
                                 }
                             } else if (defencedPixel.length == 1) {
@@ -117,7 +124,7 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
                                             type: movedPixel.type,
                                             lvl: defencedPixel[0].lvl + movedPixel.lvl
                                         })
-                                        if( movedPixel.lvl < 100){
+                                        if (movedPixel.lvl < 100) {
                                             movedPixel.lvl = 1
                                         }
                                     }
@@ -141,8 +148,7 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
             }
 
 
-            // return state.map(team => team.id == teamWalks.id ? teamWalks : team)
-            return [...defencedTeams, teamWalks]
+            return [teamWalks, ...defencedTeams].sort((a, b) => a.id > b.id ? 1 : -1)
     }
 }
 
@@ -198,11 +204,28 @@ const getMovement = (index: number, arenaHeight: number, arenaWidth: number) => 
     return row * arenaWidth + column
 }
 
-const checkNeedUpLvl = (team: Team, index: number):Pixel | undefined => {
-        const findPixel = team.pixels.find(pixel => pixel.index == index)
-        if (findPixel) {
-            return findPixel
-        } else {
-            return  undefined
-        }
+const addPixels = (countTeam: number, countPixel: number, teamId: number, settingGame: SettingGame, color: number, maxMaxId: number) => {
+    let newPixels: Pixel[] = []
+
+
+    for (let i = 0; i < countPixel; i++) {
+        newPixels.push({
+            id: maxMaxId + i,
+            index: locationDetermination(teamId, settingGame, i, countTeam),
+            color: color,
+            type: "solder",
+            lvl: 1
+        })
+    }
+
+    return newPixels
+}
+
+const checkNeedUpLvl = (team: Team, index: number): Pixel | undefined => {
+    const findPixel = team.pixels.find(pixel => pixel.index == index)
+    if (findPixel) {
+        return findPixel
+    } else {
+        return undefined
+    }
 }

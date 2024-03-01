@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from "react";
+import React from "react";
 import {Team} from "../../tools/Interface/TeamInterface";
 import {SettingGame} from "../../tools/Interface/SettingGameInterface";
 import {SettingStyleArena} from "../../tools/Interface/OtherInterface";

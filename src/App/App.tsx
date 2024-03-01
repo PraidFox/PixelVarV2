@@ -15,7 +15,8 @@ const defaultTeams: Team[] = [
         id: 0,
         name: "Team_0",
         color: 0,
-        pixels: [{id: 0, index: 0, color: 0, type: "solder", lvl: 1}]
+        pixels: [{id: 0, index: 0, color: 0, type: "solder", lvl: 1}],
+        countPixelsStart: 1
     }
 ]
 
@@ -46,6 +47,8 @@ const App = () => {
     const [time, setTime] = useState(0)
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>()
 
+
+    console.log("sadasda", teams.map(t => t.id))
 
 
     useEffect(() => {
@@ -127,6 +130,14 @@ const App = () => {
         setSettingStyleArena({type: "CHANGE_SIZE_CELL", payload: value})
     }
 
+    const resetGame = () => {
+            setStartedGame(false)
+        setTeams({type: "RESET_TEAM", payload: {settingGame: settingGame}})
+        setTime(0)
+        setCountSteps(0)
+    }
+
+
     return <>
         <h1 style={{color: "white"}}>PixelWar</h1>
         <div style={{display: 'flex', gap: "2%"}}>
@@ -154,7 +165,8 @@ const App = () => {
 
                 <br/>
                 <button onClick={() => setStartedGame(true)}>Старт</button>
-                <button onClick={() => setStartedGame(false)}>Стоп</button>
+                <button onClick={() => setStartedGame(false)}>Пауза</button>
+                <button onClick={resetGame}>Заново</button>
             </div>
         </div>
     </>
