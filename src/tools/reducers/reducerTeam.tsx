@@ -29,7 +29,6 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
                 }
             )
 
-            console.log(newTeams)
             return newTeams
         case "RESET_TEAM":
             //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)

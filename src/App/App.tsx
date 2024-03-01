@@ -10,6 +10,7 @@ import {Statistics} from "./Statistics";
 import {SettingStyleArena} from "../tools/Interface/OtherInterface";
 import {reducerSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
 import {LocalStatistics} from "./LocalStatistics";
+import {Indicator} from "./Indicator";
 
 const defaultTeams: Team[] = localStorage.getItem("settingTeam") ? JSON.parse(localStorage.getItem("settingTeam") as string) : [
     {
@@ -130,9 +131,6 @@ const App = () => {
     }
 
 
-
-
-
     const setPixelTeam = (teamId: number, countPixel: number) => {
         setTeams({type: "CHANGE_COUNT_PIXELS_TEAM", payload: {teamId, countPixel, settingGame: settingGame}})
     }
@@ -220,6 +218,9 @@ const App = () => {
                                                                                            time={time}/></div>}
 
                         <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
+
+                            <Indicator teams={teams} countAllPixels={settingGame.width * settingGame.height}/>
+
                         {hiddenInformation && <div style={{textAlign: "center"}}>
                             <button style={styleButton} onClick={() => setStartedGame(true)}>Старт</button>
                             <button style={styleButton} onClick={() => setStartedGame(false)}>Пауза</button>
