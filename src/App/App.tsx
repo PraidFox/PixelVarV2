@@ -157,6 +157,7 @@ const App = () => {
                 teams={teams}
                 settingGame={settingGame}
                 settingStyleArena={settingStyleArena}
+
             />
 
             <div>
