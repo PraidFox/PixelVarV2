@@ -71,7 +71,12 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
 
             const indexPixel = Math.floor(Math.random() * teamWalks.pixels.length)
             const movedPixel = teamWalks.pixels[indexPixel]
-            const newIndex = getMovement(movedPixel.index, settingGame.height, settingGame.width)
+            const newIndex = getMovement(movedPixel.index + 1, settingGame.height, settingGame.width)
+
+            if(newIndex > settingGame.width * settingGame.height){
+                debugger
+            }
+
 
             if (state.length == 1) {
                 teamWalks.pixels[indexPixel].index = newIndex
@@ -136,8 +141,15 @@ const locationDetermination = (numberTeam: number, settingGame: SettingGame, ind
 
 const getMovement = (index: number, arenaHeight: number, arenaWidth: number) => {
     let options: string[] = []
-    let column = index % arenaHeight
-    let row = Math.floor(index / arenaHeight)
+    let column = Math.ceil(index / arenaWidth)
+    let row = Math.ceil(index % arenaHeight)
+
+    console.log("index", index)
+    console.log("column/arenaWidth", arenaWidth)
+    console.log("row/arenaHeight", arenaHeight)
+
+    console.log("column", column)
+    console.log("row", row)
 
     if (column !== 0) {
         options.push("up")
@@ -152,6 +164,8 @@ const getMovement = (index: number, arenaHeight: number, arenaWidth: number) => 
         options.push("right")
     }
 
+
+    console.log("options", options)
 
     switch (options[Math.floor(Math.random() * options.length)]) {
         case 'left':

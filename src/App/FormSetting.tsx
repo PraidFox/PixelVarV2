@@ -53,12 +53,18 @@ export const FormSetting = ({
     }
 
     const changeTurnOrder = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMovedValue(event.target.value)
+
+        if(event.target.value === "oneByOne" || event.target.value === "random") {
+            setChangeTurnOrder(event.target.value)
+        }
+
     }
 
 
+
+
     return (
-        <div>
+        <div style={{width: "25%"}}>
             <fieldset>
                 <legend style={{color: "white"}}>Настройка стиля арены:</legend>
                 <input type="checkbox" name="border" id="border" defaultChecked={settingStyleArena.border}
@@ -117,8 +123,8 @@ export const FormSetting = ({
                     name="turnOrder"
                     value="oneByOne"
                     id="oneByOne"
-                    checked={settingGame.contact == "oneByOne"}
-                    onChange={changeContactValue}
+                    checked={settingGame.turnOrder == "oneByOne"}
+                    onChange={changeTurnOrder}
                 />
                 <label style={{color: "white"}} htmlFor="oneByOne">По очереди</label>
 
@@ -127,10 +133,10 @@ export const FormSetting = ({
                     name="turnOrder"
                     value="random"
                     id="random"
-                    checked={settingGame.contact == "random"}
-                    onChange={changeContactValue}
+                    checked={settingGame.turnOrder == "random"}
+                    onChange={changeTurnOrder}
                 />
-                <label style={{color: "white"}} htmlFor="random">Рандомна</label>
+                <label style={{color: "white"}} htmlFor="random">Рандом</label>
 
 
                 <br/><br/>
@@ -174,7 +180,7 @@ export const FormSetting = ({
                 <legend style={{color: "white"}}>Настройка команд:</legend>
                 <span style={{color: "white"}}>Количество команд: </span><input type="number" id="countTeam"
                                                                                 name="countTeam" min="1" max="2"
-                                                                                defaultValue={1}
+                                                                                defaultValue={teams.length}
                                                                                 onChange={e => setCountTeam(Number(e.target.value))}/>
                 {teams.map(team =>
                     <div key={`countPixelTeam_${team.id}`}>

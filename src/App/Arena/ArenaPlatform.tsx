@@ -12,7 +12,6 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
     let countCell = settingGame.width * settingGame.height
     const allPixel = teams.map(team => team.pixels).flat()
 
-    console.log(settingStyleArena)
     const getPixel = (index: number) => {
         const pixel = allPixel.filter(pixel => pixel.index === index)
         if (pixel.length > 0) {
@@ -20,6 +19,8 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                 border: settingStyleArena.border ? '1px solid black' : '',
                 width: settingStyleArena.sizeCell,
                 height: settingStyleArena.sizeCell,
+                // width: "40px",
+                // height: "40px",
                 backgroundColor: `hsl(${pixel[0].color}deg 100% ${60 - pixel.length * 10 < 20 ? 20 : 60 - pixel.length * 10}%)`
             }}>
                 {settingStyleArena.infoIndex ? index : ""}
@@ -32,7 +33,9 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                 border: settingStyleArena.border ? '1px solid black' : '',
                 width: settingStyleArena.sizeCell,
                 height: settingStyleArena.sizeCell,
-                backgroundColor: '#e7e5e5'
+                // width: "40px",
+                // height: "40px",
+                backgroundColor: '#252525'
             }}>
                 {settingStyleArena.infoIndex ? index : ''}
             </div>

@@ -9,8 +9,9 @@ import {Team} from "../tools/Interface/TeamInterface";
 import {Statistics} from "./Statistics";
 import {SettingStyleArena} from "../tools/Interface/OtherInterface";
 import {reducerSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
+import {LocalStatistics} from "./LocalStatistics";
 
-const defaultTeams: Team[] = [
+const defaultTeams: Team[] = localStorage.getItem("settingTeam") ? JSON.parse(localStorage.getItem("settingTeam") as string) : [
     {
         id: 0,
         name: "Team_0",
@@ -26,16 +27,27 @@ const defaultSettingGame: SettingGame = localStorage.getItem("settingGame") ? JS
     speedMove: 100,
     contact: "Exterminate",
     moved: "Default",
+    turnOrder: "oneByOne"
 }
 
 const defaultSettingStyleArena: SettingStyleArena = localStorage.getItem("settingStyleArena") ? JSON.parse(localStorage.getItem("settingStyleArena") as string) : {
     border: true,
     infoIndex: false,
     infoCountPixel: false,
-    sizeCell: 50,
+    sizeCell: 10,
     infoLvl: false
 }
 
+const styleButton = {
+
+    height: "30px",
+        backgroundColor: "#252525",
+        color: "white",
+        padding: "4px",
+        borderRadius: "5px",
+        margin: "5px"
+
+}
 
 const App = () => {
     const [settingGame, setSettingGame] = useReducer(reducerSettingGame, defaultSettingGame)
@@ -50,12 +62,19 @@ const App = () => {
     const [hiddenInformation, setHiddenInformation] = useState(true)
 
 
+
     useEffect(() => {
         localStorage.setItem("settingGame", JSON.stringify(settingGame))
     }, [settingGame]);
     useEffect(() => {
         localStorage.setItem("settingStyleArena", JSON.stringify(settingStyleArena))
     }, [settingStyleArena]);
+    useEffect(() => {
+        if(!intervalId){
+            //const settingTeam = {countTeam: teams.length, }
+            localStorage.setItem("settingTeam", JSON.stringify(teams))
+        }
+    }, [teams]);
 
     useEffect(() => {
         if (startedGame) {
@@ -98,6 +117,7 @@ const App = () => {
     }, [startedGame]);
 
     const setWidthArena = (value: number) => {
+        console.log(value)
         setSettingGame({type: "CHANGE_WIDTH_ARENA", payload: value})
     }
     const setHeightArena = (value: number) => {
@@ -154,21 +174,12 @@ const App = () => {
             <div style={{position: "absolute", left: 10, top: 10}}>
                 <span style={{color: "white", fontSize: "30px"}}><b>PixelWar</b></span>
                 <br/>
-                <button style={{
-                    height: "30px",
-                    backgroundColor: "#252525",
-                    color: "white",
-                    padding: "4px",
-                    borderRadius: "5px",
-                    margin: "10px"
-                }}
+                <button style={styleButton}
                         onClick={() => setHiddenInformation(r => !r)}> {hiddenInformation ? "Убрать лишнее" : "Вернуть"}</button>
             </div>
-            <div style={{height: "95vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
+            <div style={{height: "95vh", display: "flex", alignItems: "center"}}>
 
-                <div style={{display: 'flex', gap: "2%"}}>
-
-
+                <div style={{display: 'flex', gap: "2%", alignItems: "center", width: "100%", justifyContent: "center" }}>
                         {hiddenInformation && <FormSetting
                             setBorderStyle={setBorderStyle}
                             setInfoIndex={setInfoIndex}
@@ -190,18 +201,18 @@ const App = () => {
                         />}
 
                     <div>
-                        {hiddenInformation && <Statistics teams={teams} countSteps={countSteps} time={time}/>}
+
+                        {hiddenInformation && <div style={{textAlign: "center", padding: "8px"}}><Statistics teams={teams} countSteps={countSteps} time={time}/></div>}
+
                         <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
-                        {hiddenInformation && <><br/>
-                            <button onClick={() => setStartedGame(true)}>Старт</button>
-                            <button onClick={() => setStartedGame(false)}>Пауза</button>
-                            <button onClick={resetGame}>Заново</button>
-                        </>}
+                        {hiddenInformation && <div style={{textAlign: "center"}}>
+                            <button style={styleButton} onClick={() => setStartedGame(true) }>Старт</button>
+                            <button style={styleButton} onClick={() => setStartedGame(false)}>Пауза</button>
+                            <button style={styleButton} onClick={resetGame}>Заново</button>
+                        </div>}
                     </div>
 
-
-
-
+                    {hiddenInformation && <LocalStatistics/>}
                 </div>
                 <div style={{color: "white", position: "absolute", bottom: 0}}>v.1.0.1</div>
             </div>
