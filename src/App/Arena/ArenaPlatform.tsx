@@ -23,7 +23,7 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                 // height: "40px",
                 backgroundColor: `hsl(${pixel[0].color}deg 100% ${60 - pixel.length * 10 < 20 ? 20 : 60 - pixel.length * 10}%)`
             }}>
-                {settingStyleArena.infoIndex ? index : ""}
+                {settingStyleArena.infoIndex ? index+1 : ""}
                 {settingStyleArena.infoIndex && settingStyleArena.infoCountPixel && '/'}
                 {settingStyleArena.infoCountPixel ? pixel.length : ""}
                 {settingStyleArena.infoLvl ? pixel[0].lvl : ""}
@@ -37,7 +37,7 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                 // height: "40px",
                 backgroundColor: '#252525'
             }}>
-                {settingStyleArena.infoIndex ? index : ''}
+                {settingStyleArena.infoIndex ? index+1 : ''}
             </div>
         }
     }
