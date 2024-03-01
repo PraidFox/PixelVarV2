@@ -30,9 +30,10 @@ const defaultSettingGame: SettingGame = localStorage.getItem("settingGame") ? JS
 
 const defaultSettingStyleArena: SettingStyleArena = localStorage.getItem("settingStyleArena") ? JSON.parse(localStorage.getItem("settingStyleArena") as string) : {
     border: true,
-    infoIndex: true,
-    infoCountPixel: true,
+    infoIndex: false,
+    infoCountPixel: false,
     sizeCell: 50,
+    infoLvl: false
 }
 
 
@@ -46,9 +47,7 @@ const App = () => {
     const [whoseMove, setWhoseMove] = useState(0)
     const [time, setTime] = useState(0)
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>()
-
-
-    console.log("sadasda", teams.map(t => t.id))
+    const [hiddenInformation, setHiddenInformation] = useState(true)
 
 
     useEffect(() => {
@@ -60,13 +59,17 @@ const App = () => {
 
     useEffect(() => {
         if (startedGame) {
-            let newWhoseMove = 0
-            if (whoseMove < teams.length - 1) {
-                newWhoseMove = whoseMove + 1
-            }
+            // let newWhoseMove = 0
+            // if (whoseMove < teams.length - 1) {
+            //     newWhoseMove = whoseMove + 1
+            // }
+
+
+            let newWhoseMove = Math.floor(Math.random() * teams.length)
+
             setWhoseMove(newWhoseMove)
 
-            if (teams.length == 1 && countSteps < 100) {
+            if (teams.length == 1 && countSteps < 1000) {
                 setTimeout(() => {
                     setTeams({type: "MOVE_PIXEL", payload: {whoseMove: newWhoseMove, settingGame: settingGame}})
                 }, settingGame.speedMove)
@@ -130,48 +133,80 @@ const App = () => {
         setSettingStyleArena({type: "CHANGE_SIZE_CELL", payload: value})
     }
 
+    const setInfoLvlPixel = (value: boolean) => {
+        setSettingStyleArena({type: "CHANGE_INFO_LVL_PIXEL", payload: value})
+    }
+
+    const setChangeTurnOrder = (value: "oneByOne" | "random") => {
+        setSettingGame({type: "CHANGE_TURN_ORDER", payload: value})
+    }
+
     const resetGame = () => {
-            setStartedGame(false)
+        setStartedGame(false)
         setTeams({type: "RESET_TEAM", payload: {settingGame: settingGame}})
         setTime(0)
         setCountSteps(0)
     }
 
 
-    return <>
-        <h1 style={{color: "white"}}>PixelWar</h1>
-        <div style={{display: 'flex', gap: "2%"}}>
-            <FormSetting
-                setBorderStyle={setBorderStyle}
-                setInfoIndex={setInfoIndex}
-                setInfoCountPixel={setInfoCountPixel}
-                setSizeCell={setSizeCell}
-                setWidthArena={setWidthArena}
-                setHeightArena={setHeightArena}
-                setCountTeam={setCountTeam}
-                setPixelTeam={setPixelTeam}
-                setContactValue={setContactValue}
-                setMovedValue={setMovedValue}
-                setSpeedGame={setSpeedGame}
-
-                teams={teams}
-                settingGame={settingGame}
-                settingStyleArena={settingStyleArena}
-
-            />
-
-            <div>
-                <Statistics teams={teams} countSteps={countSteps} time={time}/>
-                <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
-
+    return (
+        <div>
+            <div style={{position: "absolute", left: 10, top: 10}}>
+                <span style={{color: "white", fontSize: "30px"}}><b>PixelWar</b></span>
                 <br/>
-                <button onClick={() => setStartedGame(true)}>Старт</button>
-                <button onClick={() => setStartedGame(false)}>Пауза</button>
-                <button onClick={resetGame}>Заново</button>
+                <button style={{
+                    height: "30px",
+                    backgroundColor: "#252525",
+                    color: "white",
+                    padding: "4px",
+                    borderRadius: "5px",
+                    margin: "10px"
+                }}
+                        onClick={() => setHiddenInformation(r => !r)}> {hiddenInformation ? "Убрать лишнее" : "Вернуть"}</button>
+            </div>
+            <div style={{height: "95vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
+
+                <div style={{display: 'flex', gap: "2%"}}>
+
+
+                        {hiddenInformation && <FormSetting
+                            setBorderStyle={setBorderStyle}
+                            setInfoIndex={setInfoIndex}
+                            setInfoCountPixel={setInfoCountPixel}
+                            setSizeCell={setSizeCell}
+                            setWidthArena={setWidthArena}
+                            setHeightArena={setHeightArena}
+                            setCountTeam={setCountTeam}
+                            setPixelTeam={setPixelTeam}
+                            setContactValue={setContactValue}
+                            setMovedValue={setMovedValue}
+                            setSpeedGame={setSpeedGame}
+                            setInfoLvlPixel={setInfoLvlPixel}
+                            setChangeTurnOrder={setChangeTurnOrder}
+
+                            teams={teams}
+                            settingGame={settingGame}
+                            settingStyleArena={settingStyleArena}
+                        />}
+
+                    <div>
+                        {hiddenInformation && <Statistics teams={teams} countSteps={countSteps} time={time}/>}
+                        <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
+                        {hiddenInformation && <><br/>
+                            <button onClick={() => setStartedGame(true)}>Старт</button>
+                            <button onClick={() => setStartedGame(false)}>Пауза</button>
+                            <button onClick={resetGame}>Заново</button>
+                        </>}
+                    </div>
+
+
+
+
+                </div>
+                <div style={{color: "white", position: "absolute", bottom: 0}}>v.1.0.1</div>
             </div>
         </div>
-    </>
-
+    )
 
 }
 

@@ -12,6 +12,7 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
     let countCell = settingGame.width * settingGame.height
     const allPixel = teams.map(team => team.pixels).flat()
 
+    console.log(settingStyleArena)
     const getPixel = (index: number) => {
         const pixel = allPixel.filter(pixel => pixel.index === index)
         if (pixel.length > 0) {
@@ -24,7 +25,7 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                 {settingStyleArena.infoIndex ? index : ""}
                 {settingStyleArena.infoIndex && settingStyleArena.infoCountPixel && '/'}
                 {settingStyleArena.infoCountPixel ? pixel.length : ""}
-                {pixel[0].lvl}
+                {settingStyleArena.infoLvl ? pixel[0].lvl : ""}
             </div>
         } else {
             return <div style={{

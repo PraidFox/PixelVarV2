@@ -15,6 +15,8 @@ interface PropsFormSetting {
     setContactValue: (value: string) => void
     setMovedValue: (value: string) => void
     setSpeedGame: (value: number) => void
+    setInfoLvlPixel: (value: boolean) => void
+    setChangeTurnOrder: (value: "oneByOne" | "random") => void
 
     teams: Team[]
     settingGame: SettingGame
@@ -33,6 +35,8 @@ export const FormSetting = ({
                                 setContactValue,
                                 setMovedValue,
                                 setSpeedGame,
+                                setInfoLvlPixel,
+                                setChangeTurnOrder,
 
                                 teams,
                                 settingGame,
@@ -48,23 +52,39 @@ export const FormSetting = ({
         setMovedValue(event.target.value)
     }
 
+    const changeTurnOrder = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMovedValue(event.target.value)
+    }
+
 
     return (
-        <div style={{width: "30%"}}>
+        <div>
             <fieldset>
                 <legend style={{color: "white"}}>Настройка стиля арены:</legend>
                 <input type="checkbox" name="border" id="border" defaultChecked={settingStyleArena.border}
                        onChange={e => setBorderStyle(e.target.checked)}/>
                 <label style={{color: "white"}} htmlFor="border">Границы</label>
 
+                <br/>
+
                 <input type="checkbox" name="infoIndex" id="infoIndex" defaultChecked={settingStyleArena.infoIndex}
                        onChange={e => setInfoIndex(e.target.checked)}/>
                 <label style={{color: "white"}} htmlFor="infoIndex">Инфо о индексе</label>
+
+                <br/>
 
                 <input type="checkbox" name="countPixelInCell" id="countPixelInCell"
                        defaultChecked={settingStyleArena.infoCountPixel}
                        onChange={e => setInfoCountPixel(e.target.checked)}/>
                 <label style={{color: "white"}} htmlFor="countPixelInCell">Инфо о кол-во пикселей в ячейке</label>
+
+                <br/>
+
+                <input type="checkbox" name="lvlPixel" id="lvlPixel"
+                       defaultChecked={settingStyleArena.infoLvl}
+                       onChange={e => setInfoLvlPixel(e.target.checked)}/>
+                <label style={{color: "white"}} htmlFor="lvlPixel">Уровень Пикселя</label>
+
                 <br/>
                 <span style={{color: "white"}}>Размер ячейки:</span> <input type="number" id="withArena"
                                                                             name="withArena" min="10" max="80"
@@ -87,6 +107,32 @@ export const FormSetting = ({
                                                                             name="speedGame" min="0" max="10"
                                                                             defaultValue={settingGame.speedMove / 10}
                                                                             onChange={e => setSpeedGame(Number(e.target.value) * 10)}/>
+                <br/>
+
+                <br/>
+                <span style={{color: "white"}}>Очерёдность хода:</span>
+                <br/>
+                <input
+                    type="radio"
+                    name="turnOrder"
+                    value="oneByOne"
+                    id="oneByOne"
+                    checked={settingGame.contact == "oneByOne"}
+                    onChange={changeContactValue}
+                />
+                <label style={{color: "white"}} htmlFor="oneByOne">По очереди</label>
+
+                <input
+                    type="radio"
+                    name="turnOrder"
+                    value="random"
+                    id="random"
+                    checked={settingGame.contact == "random"}
+                    onChange={changeContactValue}
+                />
+                <label style={{color: "white"}} htmlFor="random">Рандомна</label>
+
+
                 <br/><br/>
                 <span style={{color: "white"}}>Поведение при соприкосновение пикселей с разных команд:</span>
                 <br/>
@@ -119,7 +165,7 @@ export const FormSetting = ({
 
                 <input type="radio" name="moved" value="Clone" id="clone" checked={settingGame.moved == "Clone"}
                        onChange={changeMovedValue}/>
-                <label style={{color: "white"}} htmlFor="clone">Клонировать</label>
+                <label style={{color: "white"}} htmlFor="clone">Клонировать (ОЧЕНЬ ДОЛГО)</label>
 
             </fieldset>
             <br/>

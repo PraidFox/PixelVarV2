@@ -1,6 +1,7 @@
 import {Pixel, Team} from "../Interface/TeamInterface";
 import {SettingGame} from "../Interface/SettingGameInterface";
 import {colorTeam} from "../const";
+import {getExterminateCloneNoWar, getExterminateCloneYesWar} from "../actionsGame";
 
 
 type Action =
@@ -15,8 +16,6 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
     switch (action.type) {
         case "RESET_TEAM":
             //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
-            console.log("teams", state)
-
             let newTeams: Team[] = []
 
             state.forEach(team => {
@@ -79,58 +78,26 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
             } else {
                 defencedTeams.forEach(warTeam => {
 
-                    const defencedPixel = warTeam.pixels.filter(pixel => pixel.index == newIndex) //Получаем пиксели другой команды по тому же индексу, куда переместился пиксель
+                    const defencedPixels = warTeam.pixels.filter(pixel => pixel.index == newIndex) //Получаем пиксели другой команды по тому же индексу, куда переместился пиксель
 
                     switch (settingGame.contact) {
                         case "Exterminate":
-                            if (defencedPixel.length == 0) {
+                            if (defencedPixels.length == 0) {
+                                //Если пошел на клетку где нет другого чужого пикселя
                                 if (settingGame.moved == "Default") {
                                     teamWalks.pixels[indexPixel].index = newIndex
                                 } else if (settingGame.moved == "Clone") {
-
-                                    let pixelUpLvl = checkNeedUpLvl(teamWalks, newIndex)
-
-                                    if (pixelUpLvl) {
-                                        pixelUpLvl.lvl = pixelUpLvl.lvl + teamWalks.pixels[indexPixel].lvl
-                                        movedPixel.lvl = 1
-                                    } else {
-                                        teamWalks.pixels.push({
-                                            id: maxMaxId + 1,
-                                            index: newIndex,
-                                            color: movedPixel.color,
-                                            type: movedPixel.type,
-                                            lvl: movedPixel.lvl
-                                        })
-                                        if (movedPixel.lvl < 100) {
-                                            movedPixel.lvl = 1
-                                        }
-                                    }
+                                    getExterminateCloneNoWar(teamWalks, newIndex, indexPixel, movedPixel, maxMaxId)
                                 }
-                            } else if (defencedPixel.length == 1) {
+                            } else if (defencedPixels.length == 1) {
+                                //Если пошел на клетку где есть один другой пиксель
                                 if (settingGame.moved == "Default") {
                                     movedPixel.index = newIndex
                                     warTeam.pixels = warTeam.pixels.filter(pixel => pixel.index != newIndex)
                                 } else if (settingGame.moved == "Clone") {
-                                    if (defencedPixel[0].lvl > movedPixel.lvl) {
-                                        defencedPixel[0].lvl = defencedPixel[0].lvl + movedPixel.lvl
-                                        movedPixel.lvl = 1
-                                    } else {
-                                        warTeam.pixels = warTeam.pixels.filter(pixel => pixel.index != newIndex)
-
-                                        teamWalks.pixels.push({
-                                            id: maxMaxId + 1,
-                                            index: newIndex,
-                                            color: movedPixel.color,
-                                            type: movedPixel.type,
-                                            lvl: defencedPixel[0].lvl + movedPixel.lvl
-                                        })
-                                        if (movedPixel.lvl < 100) {
-                                            movedPixel.lvl = 1
-                                        }
-                                    }
-
+                                    getExterminateCloneYesWar(defencedPixels, movedPixel, warTeam, newIndex, teamWalks, maxMaxId)
                                 }
-                            } else if (defencedPixel.length > 1) {
+                            } else if (defencedPixels.length > 1) {
                                 console.log("Я тут")
 
                                 teamWalks.pixels = teamWalks.pixels.filter(pixel => pixel.index != indexPixel)
@@ -219,13 +186,4 @@ const addPixels = (countTeam: number, countPixel: number, teamId: number, settin
     }
 
     return newPixels
-}
-
-const checkNeedUpLvl = (team: Team, index: number): Pixel | undefined => {
-    const findPixel = team.pixels.find(pixel => pixel.index == index)
-    if (findPixel) {
-        return findPixel
-    } else {
-        return undefined
-    }
 }
