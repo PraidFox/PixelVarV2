@@ -9,8 +9,9 @@ import {Team} from "../tools/Interface/TeamInterface";
 import {Statistics} from "./Statistics";
 import {SettingStyleArena} from "../tools/Interface/OtherInterface";
 import {reducerSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
+import {LocalStatistics} from "./LocalStatistics";
 
-const defaultTeams: Team[] = [
+const defaultTeams: Team[] = localStorage.getItem("settingTeam") ? JSON.parse(localStorage.getItem("settingTeam") as string) : [
     {
         id: 0,
         name: "Team_0",
@@ -26,15 +27,27 @@ const defaultSettingGame: SettingGame = localStorage.getItem("settingGame") ? JS
     speedMove: 100,
     contact: "Exterminate",
     moved: "Default",
+    turnOrder: "oneByOne"
 }
 
 const defaultSettingStyleArena: SettingStyleArena = localStorage.getItem("settingStyleArena") ? JSON.parse(localStorage.getItem("settingStyleArena") as string) : {
     border: true,
-    infoIndex: true,
-    infoCountPixel: true,
-    sizeCell: 50,
+    infoIndex: false,
+    infoCountPixel: false,
+    sizeCell: 10,
+    infoLvl: false
 }
 
+const styleButton = {
+
+    height: "30px",
+        backgroundColor: "#252525",
+        color: "white",
+        padding: "4px",
+        borderRadius: "5px",
+        margin: "5px"
+
+}
 
 const App = () => {
     const [settingGame, setSettingGame] = useReducer(reducerSettingGame, defaultSettingGame)
@@ -46,9 +59,8 @@ const App = () => {
     const [whoseMove, setWhoseMove] = useState(0)
     const [time, setTime] = useState(0)
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>()
+    const [hiddenInformation, setHiddenInformation] = useState(true)
 
-
-    console.log("sadasda", teams.map(t => t.id))
 
 
     useEffect(() => {
@@ -57,16 +69,26 @@ const App = () => {
     useEffect(() => {
         localStorage.setItem("settingStyleArena", JSON.stringify(settingStyleArena))
     }, [settingStyleArena]);
+    useEffect(() => {
+        if(!intervalId){
+            //const settingTeam = {countTeam: teams.length, }
+            localStorage.setItem("settingTeam", JSON.stringify(teams))
+        }
+    }, [teams]);
 
     useEffect(() => {
         if (startedGame) {
-            let newWhoseMove = 0
-            if (whoseMove < teams.length - 1) {
-                newWhoseMove = whoseMove + 1
-            }
+            // let newWhoseMove = 0
+            // if (whoseMove < teams.length - 1) {
+            //     newWhoseMove = whoseMove + 1
+            // }
+
+
+            let newWhoseMove = Math.floor(Math.random() * teams.length)
+
             setWhoseMove(newWhoseMove)
 
-            if (teams.length == 1 && countSteps < 100) {
+            if (teams.length == 1 && countSteps < 1000) {
                 setTimeout(() => {
                     setTeams({type: "MOVE_PIXEL", payload: {whoseMove: newWhoseMove, settingGame: settingGame}})
                 }, settingGame.speedMove)
@@ -95,6 +117,7 @@ const App = () => {
     }, [startedGame]);
 
     const setWidthArena = (value: number) => {
+        console.log(value)
         setSettingGame({type: "CHANGE_WIDTH_ARENA", payload: value})
     }
     const setHeightArena = (value: number) => {
@@ -130,47 +153,71 @@ const App = () => {
         setSettingStyleArena({type: "CHANGE_SIZE_CELL", payload: value})
     }
 
+    const setInfoLvlPixel = (value: boolean) => {
+        setSettingStyleArena({type: "CHANGE_INFO_LVL_PIXEL", payload: value})
+    }
+
+    const setChangeTurnOrder = (value: "oneByOne" | "random") => {
+        setSettingGame({type: "CHANGE_TURN_ORDER", payload: value})
+    }
+
     const resetGame = () => {
-            setStartedGame(false)
+        setStartedGame(false)
         setTeams({type: "RESET_TEAM", payload: {settingGame: settingGame}})
         setTime(0)
         setCountSteps(0)
     }
 
 
-    return <>
-        <h1 style={{color: "white"}}>PixelWar</h1>
-        <div style={{display: 'flex', gap: "2%"}}>
-            <FormSetting
-                setBorderStyle={setBorderStyle}
-                setInfoIndex={setInfoIndex}
-                setInfoCountPixel={setInfoCountPixel}
-                setSizeCell={setSizeCell}
-                setWidthArena={setWidthArena}
-                setHeightArena={setHeightArena}
-                setCountTeam={setCountTeam}
-                setPixelTeam={setPixelTeam}
-                setContactValue={setContactValue}
-                setMovedValue={setMovedValue}
-                setSpeedGame={setSpeedGame}
-
-                teams={teams}
-                settingGame={settingGame}
-                settingStyleArena={settingStyleArena}
-            />
-
-            <div>
-                <Statistics teams={teams} countSteps={countSteps} time={time}/>
-                <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
-
+    return (
+        <div>
+            <div style={{position: "absolute", left: 10, top: 10}}>
+                <span style={{color: "white", fontSize: "30px"}}><b>PixelWar</b></span>
                 <br/>
-                <button onClick={() => setStartedGame(true)}>Старт</button>
-                <button onClick={() => setStartedGame(false)}>Пауза</button>
-                <button onClick={resetGame}>Заново</button>
+                <button style={styleButton}
+                        onClick={() => setHiddenInformation(r => !r)}> {hiddenInformation ? "Убрать лишнее" : "Вернуть"}</button>
+            </div>
+            <div style={{height: "95vh", display: "flex", alignItems: "center"}}>
+
+                <div style={{display: 'flex', gap: "2%", alignItems: "center", width: "100%", justifyContent: "center" }}>
+                        {hiddenInformation && <FormSetting
+                            setBorderStyle={setBorderStyle}
+                            setInfoIndex={setInfoIndex}
+                            setInfoCountPixel={setInfoCountPixel}
+                            setSizeCell={setSizeCell}
+                            setWidthArena={setWidthArena}
+                            setHeightArena={setHeightArena}
+                            setCountTeam={setCountTeam}
+                            setPixelTeam={setPixelTeam}
+                            setContactValue={setContactValue}
+                            setMovedValue={setMovedValue}
+                            setSpeedGame={setSpeedGame}
+                            setInfoLvlPixel={setInfoLvlPixel}
+                            setChangeTurnOrder={setChangeTurnOrder}
+
+                            teams={teams}
+                            settingGame={settingGame}
+                            settingStyleArena={settingStyleArena}
+                        />}
+
+                    <div>
+
+                        {hiddenInformation && <div style={{textAlign: "center", padding: "8px"}}><Statistics teams={teams} countSteps={countSteps} time={time}/></div>}
+
+                        <ArenaPlatform settingGame={settingGame} teams={teams} settingStyleArena={settingStyleArena}/>
+                        {hiddenInformation && <div style={{textAlign: "center"}}>
+                            <button style={styleButton} onClick={() => setStartedGame(true) }>Старт</button>
+                            <button style={styleButton} onClick={() => setStartedGame(false)}>Пауза</button>
+                            <button style={styleButton} onClick={resetGame}>Заново</button>
+                        </div>}
+                    </div>
+
+                    {hiddenInformation && <LocalStatistics/>}
+                </div>
+                <div style={{color: "white", position: "absolute", bottom: 0}}>v.1.0.1</div>
             </div>
         </div>
-    </>
-
+    )
 
 }
 

@@ -3,4 +3,5 @@ export interface SettingStyleArena {
     infoIndex: boolean
     infoCountPixel: boolean
     sizeCell: number
+    infoLvl: boolean
 }

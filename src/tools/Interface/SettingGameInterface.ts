@@ -6,6 +6,7 @@ export interface SettingGame {
     speedMove: number,
     contact: string,
     moved: string,
+    turnOrder: "oneByOne" | "random"
 }
 
 // export interface Arena extends SettingArena{

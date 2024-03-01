@@ -19,19 +19,23 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                 border: settingStyleArena.border ? '1px solid black' : '',
                 width: settingStyleArena.sizeCell,
                 height: settingStyleArena.sizeCell,
+                // width: "40px",
+                // height: "40px",
                 backgroundColor: `hsl(${pixel[0].color}deg 100% ${60 - pixel.length * 10 < 20 ? 20 : 60 - pixel.length * 10}%)`
             }}>
                 {settingStyleArena.infoIndex ? index : ""}
                 {settingStyleArena.infoIndex && settingStyleArena.infoCountPixel && '/'}
                 {settingStyleArena.infoCountPixel ? pixel.length : ""}
-                {pixel[0].lvl}
+                {settingStyleArena.infoLvl ? pixel[0].lvl : ""}
             </div>
         } else {
             return <div style={{
                 border: settingStyleArena.border ? '1px solid black' : '',
                 width: settingStyleArena.sizeCell,
                 height: settingStyleArena.sizeCell,
-                backgroundColor: '#e7e5e5'
+                // width: "40px",
+                // height: "40px",
+                backgroundColor: '#252525'
             }}>
                 {settingStyleArena.infoIndex ? index : ''}
             </div>
