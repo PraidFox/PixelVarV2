@@ -4,4 +4,13 @@ export interface SettingStyleArena {
     infoCountPixel: boolean
     sizeCell: number
     infoLvl: boolean
+    colorBackgroundArena: string
+}
+
+export interface LocalStatisticsInfo {
+    countGames: number
+    totalTime: number
+    totalSteps: number
+    countWinTeamOne: number
+    countWinTeamTwo: number
 }

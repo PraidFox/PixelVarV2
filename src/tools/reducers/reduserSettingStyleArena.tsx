@@ -1,9 +1,10 @@
 import {SettingStyleArena} from "../Interface/OtherInterface";
 
-type Action = {type: "CHANGE_BORDER" | "CHANGE_INFO_INDEX" | "CHANGE_INFO_COUNT_PIXEL" | "CHANGE_INFO_LVL_PIXEL", payload: boolean}
+export type ActionSettingStyleArena = {type: "CHANGE_BORDER" | "CHANGE_INFO_INDEX" | "CHANGE_INFO_COUNT_PIXEL" | "CHANGE_INFO_LVL_PIXEL", payload: boolean}
     | {type: "CHANGE_SIZE_CELL", payload: number}
     | {type: "SET_ALL_SETTING", payload: SettingStyleArena}
-export const reducerSettingStyleArena = (state: SettingStyleArena, action: Action) : SettingStyleArena => {
+| {type: "CHANGE_COLOR_ARENA", payload: string}
+export const reducerSettingStyleArena = (state: SettingStyleArena, action: ActionSettingStyleArena) : SettingStyleArena => {
     switch (action.type) {
         case "SET_ALL_SETTING":
             return action.payload
@@ -17,5 +18,8 @@ export const reducerSettingStyleArena = (state: SettingStyleArena, action: Actio
             return {...state, sizeCell: action.payload}
         case "CHANGE_INFO_LVL_PIXEL":
             return {...state, infoLvl: action.payload}
+        case "CHANGE_COLOR_ARENA":
+            return {...state, colorBackgroundArena: action.payload}
+
     }
 }
