@@ -1,6 +1,21 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {LocalStatisticsInfo} from "../tools/Interface/OtherInterface";
 
 export const LocalStatistics = () => {
+    const [localStatistics, setLocalStatistics] = useState<LocalStatisticsInfo>()
+
+    useEffect(() => {
+        const defaultLocalStatistics: LocalStatisticsInfo = localStorage.getItem("localStatisticsInfo") ? JSON.parse(localStorage.getItem("localStatisticsInfo") as string) : {
+            countGames: 0,
+            totalTime: 0,
+            totalSteps: 0,
+            countWinTeamOne: 0,
+            countWinTeamTwo: 0
+        }
+
+        setLocalStatistics(defaultLocalStatistics)
+    }, []);
+
 return (
     <div style={{width: "25%"}}>
         <fieldset>
@@ -18,10 +33,7 @@ return (
             <br/>
             <br/>
             <span style={{color: "white"}}>Побед Синих пикселей:</span>
-
         </fieldset>
-
-
     </div>
 )
 }

@@ -1,48 +1,79 @@
-import React, {useState} from "react"
+import React, {Dispatch, useState} from "react"
 import {Team} from "../tools/Interface/TeamInterface";
 import {SettingGame} from "../tools/Interface/SettingGameInterface";
 import {SettingStyleArena} from "../tools/Interface/OtherInterface";
+import {ActionSettingGame} from "../tools/reducers/reducerSettingGame";
+import {ActionTeams} from "../tools/reducers/reducerTeam";
+import {ActionSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
 
 interface PropsFormSetting {
-    setBorderStyle: (value: boolean) => void
-    setInfoIndex: (value: boolean) => void
-    setInfoCountPixel: (value: boolean) => void
-    setSizeCell: (value: number) => void
-    setWidthArena: (value: number) => void
-    setHeightArena: (value: number) => void
-    setCountTeam: (value: number) => void
-    setPixelTeam: (teamId: number, countPixel: number) => void
-    setContactValue: (value: string) => void
-    setMovedValue: (value: string) => void
-    setSpeedGame: (value: number) => void
-    setInfoLvlPixel: (value: boolean) => void
-    setChangeTurnOrder: (value: "oneByOne" | "random") => void
-
     teams: Team[]
     settingGame: SettingGame
     settingStyleArena: SettingStyleArena
+
+    setTeams: Dispatch<ActionTeams>
+    setSettingGame: Dispatch<ActionSettingGame>
+    setSettingStyleArena: Dispatch<ActionSettingStyleArena>
 }
 
 export const FormSetting = ({
-                                setBorderStyle,
-                                setInfoIndex,
-                                setInfoCountPixel,
-                                setSizeCell,
-                                setWidthArena,
-                                setHeightArena,
-                                setCountTeam,
-                                setPixelTeam,
-                                setContactValue,
-                                setMovedValue,
-                                setSpeedGame,
-                                setInfoLvlPixel,
-                                setChangeTurnOrder,
-
                                 teams,
                                 settingGame,
-                                settingStyleArena
+                                settingStyleArena,
+
+                                setTeams,
+                                setSettingGame,
+                                setSettingStyleArena
                             }: PropsFormSetting) => {
 
+
+    const setBorderStyle = (value: boolean) => {
+        setSettingStyleArena({type: "CHANGE_BORDER", payload: value})
+    }
+    const setInfoIndex = (value: boolean) => {
+        setSettingStyleArena({type: "CHANGE_INFO_INDEX", payload: value})
+    }
+    const setInfoCountPixel = (value: boolean) => {
+        setSettingStyleArena({type: "CHANGE_INFO_COUNT_PIXEL", payload: value})
+    }
+    const setSizeCell = (value: number) => {
+        setSettingStyleArena({type: "CHANGE_SIZE_CELL", payload: value})
+    }
+
+    const setInfoLvlPixel = (value: boolean) => {
+        setSettingStyleArena({type: "CHANGE_INFO_LVL_PIXEL", payload: value})
+    }
+
+    const setChangeTurnOrder = (value: "oneByOne" | "random") => {
+        setSettingGame({type: "CHANGE_TURN_ORDER", payload: value})
+    }
+
+    const setWidthArena = (value: number) => {
+        setSettingGame({type: "CHANGE_WIDTH_ARENA", payload: value})
+    }
+    const setHeightArena = (value: number) => {
+        setSettingGame({type: "CHANGE_HEIGHT_ARENA", payload: value})
+    }
+
+    const setSpeedGame = (value: number) => {
+        setSettingGame({type: "CHANGE_SPEED", payload: value})
+    }
+    const setContactValue = (value: string) => {
+        setSettingGame({type: "CHANGE_CONTACT_VALUE", payload: value})
+    }
+    const setMovedValue = (value: string) => {
+        setSettingGame({type: "CHANGE_MOVED_VALUE", payload: value})
+    }
+    const setCountTeam = (value: number) => {
+        setTeams({type: "CHANGE_COUNT_TEAM", payload: {countTeam: value, settingGame: settingGame}})
+    }
+    const setPixelTeam = (teamId: number, countPixel: number) => {
+        setTeams({type: "CHANGE_COUNT_PIXELS_TEAM", payload: {teamId, countPixel, settingGame: settingGame}})
+    }
+
+    const setColorArena = (value: string) => {
+        setSettingStyleArena({type: "CHANGE_COLOR_ARENA", payload: value})
+    }
 
     const changeContactValue = (event: React.ChangeEvent<HTMLInputElement>) => {
         setContactValue(event.target.value)
@@ -53,17 +84,19 @@ export const FormSetting = ({
     }
 
     const changeTurnOrder = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-        if(event.target.value === "oneByOne" || event.target.value === "random") {
+        if (event.target.value === "oneByOne" || event.target.value === "random") {
             setChangeTurnOrder(event.target.value)
         }
-
     }
+
+    console.log("Первый", teams)
 
     return (
         <div style={{width: "25%"}}>
             <fieldset>
                 <legend style={{color: "white"}}>Настройка стиля арены:</legend>
+
+
                 <input type="checkbox" name="border" id="border" defaultChecked={settingStyleArena.border}
                        onChange={e => setBorderStyle(e.target.checked)}/>
                 <label style={{color: "white"}} htmlFor="border">Границы</label>
@@ -83,16 +116,27 @@ export const FormSetting = ({
 
                 <br/>
 
-                <input type="checkbox" name="lvlPixel" id="lvlPixel"
-                       defaultChecked={settingStyleArena.infoLvl}
-                       onChange={e => setInfoLvlPixel(e.target.checked)}/>
-                <label style={{color: "white"}} htmlFor="lvlPixel">Уровень Пикселя</label>
+                {/*<input type="checkbox" name="lvlPixel" id="lvlPixel"*/}
+                {/*       defaultChecked={settingStyleArena.infoLvl}*/}
+                {/*       onChange={e => setInfoLvlPixel(e.target.checked)}/>*/}
+                {/*<label style={{color: "white"}} htmlFor="lvlPixel">Уровень Пикселя</label>*/}
 
+                {/*<br/>*/}
                 <br/>
                 <span style={{color: "white"}}>Размер ячейки:</span> <input type="number" id="withArena"
-                                                                            name="withArena" min="10" max="80"
+                                                                            name="withArena"
+                                                                            min="5"
+                                                                            max="40"
                                                                             defaultValue={settingStyleArena.sizeCell}
                                                                             onChange={e => setSizeCell(Number(e.target.value))}/>
+
+                <br/>
+                <br/>
+                <label style={{color: "white"}} htmlFor="border">Цвет фона арены: </label>
+                <input type="color" onChange={e => setColorArena(e.target.value)}
+                       value={settingStyleArena.colorBackgroundArena}/>
+
+
             </fieldset>
             <fieldset>
                 <legend style={{color: "white"}}>Настройка игры:</legend>
@@ -124,7 +168,7 @@ export const FormSetting = ({
                     onChange={changeTurnOrder}
                 />
                 <label style={{color: "white"}} htmlFor="oneByOne">По очереди</label>
-
+                <br/>
                 <input
                     type="radio"
                     name="turnOrder"
@@ -137,7 +181,7 @@ export const FormSetting = ({
 
 
                 <br/><br/>
-                <span style={{color: "white"}}>Поведение при соприкосновение пикселей с разных команд:</span>
+                <span style={{color: "white"}}>Поведение при наложении пикселей с разных команд:</span>
                 <br/>
                 <input
                     type="radio"
@@ -148,7 +192,7 @@ export const FormSetting = ({
                     onChange={changeContactValue}
                 />
                 <label style={{color: "white"}} htmlFor="exterminate">EXTERMINATE</label>
-
+                <br/>
                 <input
                     type="radio"
                     name="contact"
@@ -166,7 +210,7 @@ export const FormSetting = ({
                 <input type="radio" name="moved" value="Default" id="default" checked={settingGame.moved == "Default"}
                        onChange={changeMovedValue}/>
                 <label style={{color: "white"}} htmlFor="default">Обычное перемещение</label>
-
+                <br/>
                 <input type="radio" name="moved" value="Clone" id="clone" checked={settingGame.moved == "Clone"}
                        onChange={changeMovedValue}/>
                 <label style={{color: "white"}} htmlFor="clone">Клонировать (А это вообще может закончиться?)</label>
@@ -182,22 +226,22 @@ export const FormSetting = ({
                                                                                 onChange={e => setCountTeam(Number(e.target.value))}/>
                 {teams.map(team =>
                     <div key={`countPixelTeam_${team.id}`}>
-                    <span
-                        style={{color: "white"}}>Количество пикселей в команде <b
-                        style={{color: `hsl(${team.color}deg 100% 50%)`}}>{team.name}</b>:</span>
+                        <br/>
+                        <span
+                            style={{color: "white"}}>Количество пикселей в команде <br/> <b
+                            style={{color: `hsl(${team.color}deg 100% 50%)`}}>{team.name}</b>:</span>
                         <input
                             type="number"
                             id={`countPixelTeam_${team.id}`}
                             name={`countPixelTeam_${team.id}`}
                             min="1"
                             max={settingGame.height * settingGame.width / teams.length}
-                            value={team.pixels.length}
+                            value={team.countPixelsStart}
                             onChange={e => setPixelTeam(team.id, Number(e.target.value))}
                         />
                         <button
                             onClick={() => setPixelTeam(team.id, settingGame.height * settingGame.width / teams.length)}>Максимум {settingGame.height * settingGame.width / teams.length}</button>
                         <br/>
-
                     </div>
                 )}
 

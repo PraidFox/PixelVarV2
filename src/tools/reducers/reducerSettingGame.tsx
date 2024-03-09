@@ -2,7 +2,7 @@ import {SettingGame} from "../Interface/SettingGameInterface";
 import {SettingStyleArena} from "../Interface/OtherInterface";
 
 
-type Action =
+export type ActionSettingGame =
     { type: "CHANGE_WIDTH_ARENA" | "CHANGE_HEIGHT_ARENA" | "CHANGE_SPEED", payload: number }
     | { type: "CHANGE_CONTACT_VALUE" | "CHANGE_MOVED_VALUE", payload: string }
     | {type: "SET_ALL_SETTING", payload: SettingGame}
@@ -10,7 +10,7 @@ type Action =
 
 
 
-export const reducerSettingGame = (state: SettingGame, action: Action): SettingGame => {
+export const reducerSettingGame = (state: SettingGame, action: ActionSettingGame): SettingGame => {
     //const maxCell = state.width * state.height
 
     switch (action.type) {

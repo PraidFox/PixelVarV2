@@ -4,14 +4,14 @@ import {colorTeam} from "../const";
 import {getExterminateCloneNoWar, getExterminateCloneYesWar} from "../actionsGame";
 
 
-type Action =
+export type ActionTeams =
     { type: "CHANGE_COUNT_TEAM", payload: { countTeam: number, settingGame: SettingGame } }
     | { type: "CHANGE_COUNT_PIXELS_TEAM", payload: { teamId: number, countPixel: number, settingGame: SettingGame } }
     | { type: "MOVE_PIXEL", payload: { whoseMove: number, settingGame: SettingGame } }
     | { type: "RESET_TEAM", payload: { settingGame: SettingGame } }
     | { type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: { settingGame: SettingGame } }
 
-export const reducerTeam = (state: Team[], action: Action): Team[] => {
+export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
     let maxMaxId = Math.max(...state.map(team => team.pixels.map(pixel => pixel.id)).flat())
     let newTeams: Team[] = []
 
@@ -29,7 +29,6 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
                 }
             )
 
-            console.log(newTeams)
             return newTeams
         case "RESET_TEAM":
             //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
@@ -122,8 +121,6 @@ export const reducerTeam = (state: Team[], action: Action): Team[] => {
                                     getExterminateCloneYesWar(defencedPixels, movedPixel, warTeam, newIndex, teamWalks, maxMaxId)
                                 }
                             } else if (defencedPixels.length > 1) {
-                                console.log("Я тут")
-
                                 teamWalks.pixels = teamWalks.pixels.filter(pixel => pixel.index != indexPixel)
                             }
 
