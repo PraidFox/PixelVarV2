@@ -20,6 +20,7 @@ export const FormSetting = ({
                                 teams,
                                 settingGame,
                                 settingStyleArena,
+
                                 setTeams,
                                 setSettingGame,
                                 setSettingStyleArena
@@ -74,7 +75,6 @@ export const FormSetting = ({
         setSettingStyleArena({type: "CHANGE_COLOR_ARENA", payload: value})
     }
 
-
     const changeContactValue = (event: React.ChangeEvent<HTMLInputElement>) => {
         setContactValue(event.target.value)
     }
@@ -88,6 +88,8 @@ export const FormSetting = ({
             setChangeTurnOrder(event.target.value)
         }
     }
+
+    console.log("Первый", teams)
 
     return (
         <div style={{width: "25%"}}>
@@ -234,13 +236,12 @@ export const FormSetting = ({
                             name={`countPixelTeam_${team.id}`}
                             min="1"
                             max={settingGame.height * settingGame.width / teams.length}
-                            value={team.pixels.length}
+                            value={team.countPixelsStart}
                             onChange={e => setPixelTeam(team.id, Number(e.target.value))}
                         />
                         <button
                             onClick={() => setPixelTeam(team.id, settingGame.height * settingGame.width / teams.length)}>Максимум {settingGame.height * settingGame.width / teams.length}</button>
                         <br/>
-
                     </div>
                 )}
 

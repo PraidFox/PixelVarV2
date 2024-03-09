@@ -121,8 +121,6 @@ export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
                                     getExterminateCloneYesWar(defencedPixels, movedPixel, warTeam, newIndex, teamWalks, maxMaxId)
                                 }
                             } else if (defencedPixels.length > 1) {
-                                console.log("Я тут")
-
                                 teamWalks.pixels = teamWalks.pixels.filter(pixel => pixel.index != indexPixel)
                             }
 

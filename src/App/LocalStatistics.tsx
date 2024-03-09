@@ -1,10 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {LocalStatisticsInfo} from "../tools/Interface/OtherInterface";
 
-
-
-
-
 export const LocalStatistics = () => {
     const [localStatistics, setLocalStatistics] = useState<LocalStatisticsInfo>()
 
@@ -19,7 +15,6 @@ export const LocalStatistics = () => {
 
         setLocalStatistics(defaultLocalStatistics)
     }, []);
-    console.log(localStatistics)
 
 return (
     <div style={{width: "25%"}}>
