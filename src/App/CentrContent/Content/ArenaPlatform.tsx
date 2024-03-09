@@ -1,7 +1,7 @@
 import React from "react";
-import {Team} from "../../tools/Interface/TeamInterface";
-import {SettingGame} from "../../tools/Interface/SettingGameInterface";
-import {SettingStyleArena} from "../../tools/Interface/OtherInterface";
+import {Team} from "../../../tools/Interface/TeamInterface";
+import {SettingGame} from "../../../tools/Interface/SettingGameInterface";
+import {SettingStyleArena} from "../../../tools/Interface/OtherInterface";
 
 
 export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {

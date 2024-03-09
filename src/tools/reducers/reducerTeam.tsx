@@ -8,14 +8,19 @@ export type ActionTeams =
     { type: "CHANGE_COUNT_TEAM", payload: { countTeam: number, settingGame: SettingGame } }
     | { type: "CHANGE_COUNT_PIXELS_TEAM", payload: { teamId: number, countPixel: number, settingGame: SettingGame } }
     | { type: "MOVE_PIXEL", payload: { whoseMove: number, settingGame: SettingGame } }
-    | { type: "RESET_TEAM", payload: { settingGame: SettingGame } }
+    // | { type: "RESET_TEAM", payload: { settingGame: SettingGame } }
     | { type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: { settingGame: SettingGame } }
+    | {type: "COPY_TEAMS" | "RESET_TEAM", payload: {teams: Team[]}}
 
 export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
     let maxMaxId = Math.max(...state.map(team => team.pixels.map(pixel => pixel.id)).flat())
     let newTeams: Team[] = []
 
     switch (action.type) {
+        case "RESET_TEAM":
+        case "COPY_TEAMS":
+            return JSON.parse(JSON.stringify([...action.payload.teams]))
+
         case "CHECK_MAX_COUNT_PIXELS_TEAM":
             const maxCountPixels = action.payload.settingGame.height * action.payload.settingGame.width / state.length
 
@@ -30,18 +35,18 @@ export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
             )
 
             return newTeams
-        case "RESET_TEAM":
-            //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
-            newTeams = []
-
-            state.forEach(team => {
-                    let newTeam: Team = {...team}
-                    newTeam.pixels = addPixels(state.length, team.countPixelsStart, team.id, action.payload.settingGame, team.color, maxMaxId)
-                    newTeams.push(newTeam)
-                }
-            )
-
-            return newTeams
+        // case "RESET_TEAM":
+        //     //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
+        //     newTeams = []
+        //
+        //     state.forEach(team => {
+        //             let newTeam: Team = {...team}
+        //             newTeam.pixels = addPixels(state.length, team.countPixelsStart, team.id, action.payload.settingGame, team.color, maxMaxId)
+        //             newTeams.push(newTeam)
+        //         }
+        //     )
+        //
+        //     return newTeams
         case "CHANGE_COUNT_TEAM":
             let teams: Team[] = JSON.parse(JSON.stringify([...state]))
 

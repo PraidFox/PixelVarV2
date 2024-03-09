@@ -1,10 +1,10 @@
 import React, {Dispatch, useState} from "react"
-import {Team} from "../tools/Interface/TeamInterface";
-import {SettingGame} from "../tools/Interface/SettingGameInterface";
-import {SettingStyleArena} from "../tools/Interface/OtherInterface";
-import {ActionSettingGame} from "../tools/reducers/reducerSettingGame";
-import {ActionTeams} from "../tools/reducers/reducerTeam";
-import {ActionSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
+import {Team} from "../../tools/Interface/TeamInterface";
+import {SettingGame} from "../../tools/Interface/SettingGameInterface";
+import {SettingStyleArena} from "../../tools/Interface/OtherInterface";
+import {ActionSettingGame} from "../../tools/reducers/reducerSettingGame";
+import {ActionTeams} from "../../tools/reducers/reducerTeam";
+import {ActionSettingStyleArena} from "../../tools/reducers/reduserSettingStyleArena";
 
 interface PropsFormSetting {
     teams: Team[]
@@ -89,7 +89,6 @@ export const FormSetting = ({
         }
     }
 
-    console.log("Первый", teams)
 
     return (
         <div style={{width: "25%"}}>

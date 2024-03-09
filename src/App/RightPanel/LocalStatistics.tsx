@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {LocalStatisticsInfo} from "../tools/Interface/OtherInterface";
+import {LocalStatisticsInfo} from "../../tools/Interface/OtherInterface";
 
 export const LocalStatistics = () => {
+
     const [localStatistics, setLocalStatistics] = useState<LocalStatisticsInfo>()
 
     useEffect(() => {
@@ -20,19 +21,19 @@ return (
     <div style={{width: "25%"}}>
         <fieldset>
             <legend style={{color: "white"}}>Локальная статистика (в разработке)</legend>
-            <span style={{color: "white"}}>Количество игр:</span>
+            <span style={{color: "white"}}>Количество игр:  {localStatistics?.countGames}</span>
             <br/>
             <br/>
-            <span style={{color: "white"}}>Общее время:</span>
+            <span style={{color: "white"}}>Общее время: {localStatistics?.totalTime}</span>
             <br/>
             <br/>
-            <span style={{color: "white"}}>Общее количество шагов:</span>
+            <span style={{color: "white"}}>Общее количество шагов: {localStatistics?.totalSteps}</span>
             <br/>
             <br/>
-            <span style={{color: "white"}}>Побед Красных пикселей:</span>
+            <span style={{color: "white"}}>Побед Красных пикселей: {localStatistics?.countWinTeamOne}</span>
             <br/>
             <br/>
-            <span style={{color: "white"}}>Побед Синих пикселей:</span>
+            <span style={{color: "white"}}>Побед Синих пикселей: {localStatistics?.countWinTeamTwo}</span>
         </fieldset>
     </div>
 )
