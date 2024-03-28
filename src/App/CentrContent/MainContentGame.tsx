@@ -32,6 +32,8 @@ const MainContentGame = ({
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>()
     const checkLostTeam = useRef(false);
 
+    console.log("У меня ререндер")
+
     useEffect(() => {
         setCurrentTeams({type: "COPY_TEAMS", payload: {teams: teams}})
         checkLostTeam.current = false
