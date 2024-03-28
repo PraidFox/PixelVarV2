@@ -6,7 +6,6 @@ import {reducerTeam} from "../tools/reducers/reducerTeam";
 import {reducerSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
 import {defaultSettingGame, defaultSettingStyleArena, defaultTeams, styleButton} from "../tools/storage/const";
 import {FormSetting} from "./LeftPanel/FormSetting";
-
 export const App = () => {
 
     const [settingGame, setSettingGame] = useReducer(reducerSettingGame, defaultSettingGame)

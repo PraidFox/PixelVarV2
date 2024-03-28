@@ -1,6 +1,6 @@
 import {Team} from "../Interfaces/TeamInterface";
 import {SettingGame} from "../Interfaces/SettingGameInterface";
-import {SettingStyleArena} from "../Interfaces/OtherInterface";
+import {LocalStatisticsInfo, SettingStyleArena} from "../Interfaces/OtherInterface";
 
 export const colorTeam = [0, 250, 120]
 
@@ -32,14 +32,23 @@ export const defaultSettingStyleArena: SettingStyleArena = localStorage.getItem(
     colorBackgroundArena: "#252525",
 }
 
+export const defaultLocalStatistic: LocalStatisticsInfo = {
+    countGames: 0,
+    totalTime: 0,
+    totalSteps: 0,
+    countWinTeamOne: 0,
+    countWinTeamTwo: 0
+}
+
+
 export const styleButton = {
     height: "30px",
     backgroundColor: "#252525",
     color: "white",
     padding: "4px",
-    borderRadius: "5px",
-    margin: "5px"
+    borderRadius: "5px"
 }
+
 
 
 

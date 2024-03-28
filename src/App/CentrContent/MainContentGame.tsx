@@ -7,6 +7,8 @@ import {StatisticsCurrentGame} from "./Content/StatisticsCurrentGame";
 import {LocalStatisticsInfo, SettingStyleArena} from "../../tools/Interfaces/OtherInterface";
 import {Indicator} from "./Content/Indicator";
 import {styleButton} from "../../tools/storage/const";
+import {UtilsLocalStorage} from "../../tools/utilsLocalStorage";
+
 
 
 interface PropsMainContentGame {
@@ -17,6 +19,8 @@ interface PropsMainContentGame {
     setUpdateLocalStatistic: (bool: boolean) => void
 }
 
+
+
 const MainContentGame = ({
                              teams,
                              settingGame,
@@ -25,14 +29,13 @@ const MainContentGame = ({
                              setUpdateLocalStatistic
                          }: PropsMainContentGame) => {
     const [currentTeams, setCurrentTeams] = useReducer(reducerTeam, teams)
-    const [startedGame, setStartedGame] = useState(false)
-    const [whoseMove, setWhoseMove] = useState(0)
-    const [countSteps, setCountSteps] = useState(0)
     const [time, setTime] = useState(0)
-    const [intervalId, setIntervalId] = useState<NodeJS.Timeout>()
-    const checkLostTeam = useRef(false);
+    const [countSteps, setCountSteps] = useState(0)
+    const [startedGame, setStartedGame] = useState(false)
 
-    console.log("У меня ререндер")
+    const whoseMove = useRef(0);
+    const intervalId = useRef<NodeJS.Timeout>();
+    const checkLostTeam = useRef(false);
 
     useEffect(() => {
         setCurrentTeams({type: "COPY_TEAMS", payload: {teams: teams}})
@@ -52,14 +55,14 @@ const MainContentGame = ({
                     let newWhoseMove = 0
 
                     if (settingGame.turnOrder == "oneByOne") {
-                        if (whoseMove < currentTeams.length - 1) {
-                            newWhoseMove = whoseMove + 1
+                        if (whoseMove.current < currentTeams.length - 1) {
+                            newWhoseMove = whoseMove.current + 1
                         }
                     } else if (settingGame.turnOrder == "random") {
                         newWhoseMove = Math.floor(Math.random() * currentTeams.length)
                     }
 
-                    setWhoseMove(newWhoseMove)
+                    whoseMove.current = newWhoseMove
 
                     setTimeout(() => {
                         setCurrentTeams({
@@ -79,48 +82,29 @@ const MainContentGame = ({
 
     useEffect(() => {
         if (startedGame) {
-            const intervalId = setInterval(() => {
+            intervalId.current = setInterval(() => {
                 setTime(r => r + 1)
             }, 1000)
-            setIntervalId(intervalId)
+
+            UtilsLocalStorage.updateLocalStatisticCountGame()
+
         } else {
             if (countSteps > 0) {
-                let currentStatistic = localStorage.getItem("localStatisticsInfo")
 
-                if (currentStatistic == null) {
-                    currentStatistic = JSON.stringify({
-                        countGames: 0,
-                        totalTime: 0,
-                        totalSteps: 0,
-                        countWinTeamOne: 0,
-                        countWinTeamTwo: 0
-                    })
-                } else {
-                    let tmp: LocalStatisticsInfo = JSON.parse(currentStatistic)
-                    tmp.countGames++
+                UtilsLocalStorage.updateLocalStatistics(time, countSteps, checkLostTeam, currentTeams)
 
-                    if (checkLostTeam.current) {
-                        currentTeams.find(team => team.pixels.length > 0)!.name == "Team_0" ? tmp.countWinTeamOne++ : tmp.countWinTeamTwo++
-                        console.log(currentTeams.find(team => team.pixels.length > 0)!.name)
-                    }
-                    tmp.totalSteps += countSteps
-                    tmp.totalTime += time
-
-
-
-                    currentStatistic = JSON.stringify(tmp)
-                }
-
-                setUpdateLocalStatistic(true)
-
-                localStorage.setItem("localStatisticsInfo", currentStatistic)
-                clearInterval(intervalId)
+                clearInterval(intervalId.current)
             }
         }
+
+        setUpdateLocalStatistic(true)
     }, [startedGame]);
 
 
     const resetGame = () => {
+        UtilsLocalStorage.updateLocalStatistics(time, countSteps, checkLostTeam, currentTeams)
+
+        setUpdateLocalStatistic(true)
         setStartedGame(false)
         setCurrentTeams({type: "RESET_TEAM", payload: {teams: teams}})
         setTime(0)
@@ -135,8 +119,10 @@ const MainContentGame = ({
             <ArenaPlatform settingGame={settingGame} teams={currentTeams} settingStyleArena={settingStyleArena}/>
             {hiddenInformation && <Indicator teams={currentTeams}/>}
             {hiddenInformation &&
-                <div style={{textAlign: "center"}}>
-                    <button style={styleButton} disabled={checkLostTeam.current} onClick={() => setStartedGame(true)}>Старт</button>
+                <div style={{display: "flex", justifyContent: "center", gap: 10}}>
+                    <button style={styleButton} disabled={checkLostTeam.current}
+                            onClick={() => setStartedGame(true)}>Старт
+                    </button>
                     <button style={styleButton} onClick={() => setStartedGame(false)}>Пауза</button>
                     <button style={styleButton} onClick={resetGame}>Заново</button>
                 </div>
