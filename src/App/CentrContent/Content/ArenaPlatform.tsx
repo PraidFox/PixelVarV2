@@ -1,7 +1,7 @@
-import React from "react";
-import {Team} from "../../../tools/Interface/TeamInterface";
-import {SettingGame} from "../../../tools/Interface/SettingGameInterface";
-import {SettingStyleArena} from "../../../tools/Interface/OtherInterface";
+import React, {useMemo} from "react";
+import {Team} from "../../../tools/Interfaces/TeamInterface";
+import {SettingGame} from "../../../tools/Interfaces/SettingGameInterface";
+import {SettingStyleArena} from "../../../tools/Interfaces/OtherInterface";
 
 
 export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
@@ -14,6 +14,7 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
 
     const getPixel = (index: number) => {
         const pixel = allPixel.filter(pixel => pixel.index === index)
+
         if (pixel.length > 0) {
             return <div
                 key={"Pixel-" + index}
@@ -37,7 +38,9 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                     width: settingStyleArena.sizeCell,
                     height: settingStyleArena.sizeCell,
                     backgroundColor: settingStyleArena.colorBackgroundArena
-                }}>
+                }}
+            >
+                {Math.random()}
                 {settingStyleArena.infoIndex ? index + 1 : ''}
             </div>
         }
@@ -48,11 +51,8 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
             display: "grid",
             gridTemplateColumns: `repeat(${settingGame.width}, 0fr)`,
             justifyContent: "center",
-            //gridTemplateRows: `repeat(${settingGame.height}, 0fr)`,
         }}>
             {Array.from({length: countCell}, (_, index) => (getPixel(index)))}
         </div>
-
-
     )
 }

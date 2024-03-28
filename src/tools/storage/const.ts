@@ -1,9 +1,8 @@
-import {Team} from "./Interface/TeamInterface";
-import {SettingGame} from "./Interface/SettingGameInterface";
-import {SettingStyleArena} from "./Interface/OtherInterface";
+import {Team} from "../Interfaces/TeamInterface";
+import {SettingGame} from "../Interfaces/SettingGameInterface";
+import {SettingStyleArena} from "../Interfaces/OtherInterface";
 
 export const colorTeam = [0, 250, 120]
-
 
 export const defaultTeams: Team[] = localStorage.getItem("settingTeam") ? JSON.parse(localStorage.getItem("settingTeam") as string) : [
     {
@@ -11,7 +10,7 @@ export const defaultTeams: Team[] = localStorage.getItem("settingTeam") ? JSON.p
         name: "Team_0",
         color: 0,
         pixels: [{id: 0, index: 0, color: 0, type: "solder", lvl: 1}],
-        countPixelsStart: 1
+        //countPixelsStart: 1
     }
 ]
 
@@ -41,4 +40,6 @@ export const styleButton = {
     borderRadius: "5px",
     margin: "5px"
 }
+
+
 

@@ -1,17 +1,12 @@
 import React, {useEffect, useReducer, useState} from "react";
-import {FormSetting} from "../LeftPanel/FormSetting";
-
-import {reducerSettingGame} from "../../tools/reducers/reducerSettingGame";
-import {SettingGame} from "../../tools/Interface/SettingGameInterface";
+import {SettingGame} from "../../tools/Interfaces/SettingGameInterface";
 import {ArenaPlatform} from "./Content/ArenaPlatform";
 import {reducerTeam} from "../../tools/reducers/reducerTeam";
-import {Team} from "../../tools/Interface/TeamInterface";
+import {Team} from "../../tools/Interfaces/TeamInterface";
 import {StatisticsCurrentGame} from "./Content/StatisticsCurrentGame";
-import {LocalStatisticsInfo, SettingStyleArena} from "../../tools/Interface/OtherInterface";
-import {reducerSettingStyleArena} from "../../tools/reducers/reduserSettingStyleArena";
-import {LocalStatistics} from "../RightPanel/LocalStatistics";
+import {SettingStyleArena} from "../../tools/Interfaces/OtherInterface";
 import {Indicator} from "./Content/Indicator";
-import {styleButton} from "../../tools/const";
+import {styleButton} from "../../tools/storage/const";
 
 
 interface PropsMainContentGame {
@@ -29,7 +24,7 @@ const MainContentGame = ({
                          }: PropsMainContentGame) => {
 
 
-    const [currentTeams, setStartingTeams] = useReducer(reducerTeam, teams)
+    const [currentTeams, setCurrentTeams] = useReducer(reducerTeam, teams)
 
     const [startedGame, setStartedGame] = useState(false)
     const [whoseMove, setWhoseMove] = useState(0)
@@ -38,10 +33,12 @@ const MainContentGame = ({
     const [time, setTime] = useState(0)
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout>()
 
-
     useEffect(() => {
-        setStartingTeams({type: "COPY_TEAMS", payload: {teams: teams}})
+        setCurrentTeams({type: "COPY_TEAMS", payload: {teams: teams}})
     }, [teams]);
+
+
+
 
     useEffect(() => {
         if (startedGame) {
@@ -59,12 +56,12 @@ const MainContentGame = ({
 
             if (currentTeams.length == 1 && countSteps < 1000) {
                 setTimeout(() => {
-                    setStartingTeams({type: "MOVE_PIXEL", payload: {whoseMove: newWhoseMove, settingGame: settingGame}})
+                    setCurrentTeams({type: "MOVE_PIXEL", payload: {whoseMove: newWhoseMove, settingGame: settingGame}})
                 }, settingGame.speedMove)
             } else {
                 if (currentTeams.length > 1 && currentTeams.filter(team => team.pixels.length == 0).length == 0) {
                     setTimeout(() => {
-                        setStartingTeams({
+                        setCurrentTeams({
                             type: "MOVE_PIXEL",
                             payload: {whoseMove: newWhoseMove, settingGame: settingGame}
                         })
@@ -98,14 +95,11 @@ const MainContentGame = ({
         }
     }, [startedGame]);
 
-    useEffect(() => {
-        setStartingTeams({type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: {settingGame: settingGame}})
-    }, [settingGame.height, settingGame.width]);
 
 
     const resetGame = () => {
         setStartedGame(false)
-        setStartingTeams({type: "RESET_TEAM", payload: {teams: teams}})
+        setCurrentTeams({type: "RESET_TEAM", payload: {teams: teams}})
         setTime(0)
         setCountSteps(0)
     }

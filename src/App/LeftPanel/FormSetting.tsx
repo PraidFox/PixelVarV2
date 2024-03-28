@@ -1,7 +1,7 @@
 import React, {Dispatch, useState} from "react"
-import {Team} from "../../tools/Interface/TeamInterface";
-import {SettingGame} from "../../tools/Interface/SettingGameInterface";
-import {SettingStyleArena} from "../../tools/Interface/OtherInterface";
+import {Team} from "../../tools/Interfaces/TeamInterface";
+import {SettingGame} from "../../tools/Interfaces/SettingGameInterface";
+import {SettingStyleArena} from "../../tools/Interfaces/OtherInterface";
 import {ActionSettingGame} from "../../tools/reducers/reducerSettingGame";
 import {ActionTeams} from "../../tools/reducers/reducerTeam";
 import {ActionSettingStyleArena} from "../../tools/reducers/reduserSettingStyleArena";
@@ -25,92 +25,62 @@ export const FormSetting = ({
                                 setSettingGame,
                                 setSettingStyleArena
                             }: PropsFormSetting) => {
+    // const setInfoLvlPixel = (value: boolean) => {
+    //     setSettingStyleArena({type: "CHANGE_INFO_LVL_PIXEL", payload: value})
+    // }
 
-
-    const setBorderStyle = (value: boolean) => {
-        setSettingStyleArena({type: "CHANGE_BORDER", payload: value})
-    }
-    const setInfoIndex = (value: boolean) => {
-        setSettingStyleArena({type: "CHANGE_INFO_INDEX", payload: value})
-    }
-    const setInfoCountPixel = (value: boolean) => {
-        setSettingStyleArena({type: "CHANGE_INFO_COUNT_PIXEL", payload: value})
-    }
-    const setSizeCell = (value: number) => {
-        setSettingStyleArena({type: "CHANGE_SIZE_CELL", payload: value})
-    }
-
-    const setInfoLvlPixel = (value: boolean) => {
-        setSettingStyleArena({type: "CHANGE_INFO_LVL_PIXEL", payload: value})
-    }
-
-    const setChangeTurnOrder = (value: "oneByOne" | "random") => {
-        setSettingGame({type: "CHANGE_TURN_ORDER", payload: value})
-    }
-
-    const setWidthArena = (value: number) => {
-        setSettingGame({type: "CHANGE_WIDTH_ARENA", payload: value})
-    }
-    const setHeightArena = (value: number) => {
-        setSettingGame({type: "CHANGE_HEIGHT_ARENA", payload: value})
-    }
-
-    const setSpeedGame = (value: number) => {
-        setSettingGame({type: "CHANGE_SPEED", payload: value})
-    }
-    const setContactValue = (value: string) => {
-        setSettingGame({type: "CHANGE_CONTACT_VALUE", payload: value})
-    }
-    const setMovedValue = (value: string) => {
-        setSettingGame({type: "CHANGE_MOVED_VALUE", payload: value})
-    }
-    const setCountTeam = (value: number) => {
-        setTeams({type: "CHANGE_COUNT_TEAM", payload: {countTeam: value, settingGame: settingGame}})
-    }
     const setPixelTeam = (teamId: number, countPixel: number) => {
         setTeams({type: "CHANGE_COUNT_PIXELS_TEAM", payload: {teamId, countPixel, settingGame: settingGame}})
     }
 
-    const setColorArena = (value: string) => {
-        setSettingStyleArena({type: "CHANGE_COLOR_ARENA", payload: value})
-    }
-
     const changeContactValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setContactValue(event.target.value)
+        setSettingGame({type: "CHANGE_CONTACT_VALUE", payload: event.target.value})
     }
 
     const changeMovedValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMovedValue(event.target.value)
+        setSettingGame({type: "CHANGE_MOVED_VALUE", payload: event.target.value})
     }
 
     const changeTurnOrder = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value === "oneByOne" || event.target.value === "random") {
-            setChangeTurnOrder(event.target.value)
+            setSettingGame({type: "CHANGE_TURN_ORDER", payload: event.target.value})
         }
     }
-
 
     return (
         <div style={{width: "25%"}}>
             <fieldset>
-                <legend style={{color: "white"}}>Настройка стиля арены:</legend>
+                <legend style={{color: "white"}}>Настройка стиля арены</legend>
 
-
-                <input type="checkbox" name="border" id="border" defaultChecked={settingStyleArena.border}
-                       onChange={e => setBorderStyle(e.target.checked)}/>
+                <input
+                    type="checkbox"
+                    name="border"
+                    id="border"
+                    defaultChecked={settingStyleArena.border}
+                    onChange={e => setSettingStyleArena({type: "CHANGE_BORDER", payload: e.target.checked})}
+                />
                 <label style={{color: "white"}} htmlFor="border">Границы</label>
 
                 <br/>
 
-                <input type="checkbox" name="infoIndex" id="infoIndex" defaultChecked={settingStyleArena.infoIndex}
-                       onChange={e => setInfoIndex(e.target.checked)}/>
+                <input
+                    type="checkbox"
+                    name="infoIndex"
+                    id="infoIndex"
+                    defaultChecked={settingStyleArena.infoIndex}
+                    onChange={e => setSettingStyleArena({type: "CHANGE_INFO_INDEX", payload: e.target.checked})}
+                />
                 <label style={{color: "white"}} htmlFor="infoIndex">Инфо о индексе</label>
 
                 <br/>
 
-                <input type="checkbox" name="countPixelInCell" id="countPixelInCell"
-                       defaultChecked={settingStyleArena.infoCountPixel}
-                       onChange={e => setInfoCountPixel(e.target.checked)}/>
+                <input
+                    type="checkbox"
+                    name="countPixelInCell"
+                    id="countPixelInCell"
+                    defaultChecked={settingStyleArena.infoCountPixel}
+                    onChange={e => setSettingStyleArena({type: "CHANGE_INFO_COUNT_PIXEL", payload: e.target.checked})}
+                />
                 <label style={{color: "white"}} htmlFor="countPixelInCell">Инфо о кол-во пикселей в ячейке</label>
 
                 <br/>
@@ -122,41 +92,64 @@ export const FormSetting = ({
 
                 {/*<br/>*/}
                 <br/>
-                <span style={{color: "white"}}>Размер ячейки:</span> <input type="number" id="withArena"
-                                                                            name="withArena"
-                                                                            min="5"
-                                                                            max="40"
-                                                                            defaultValue={settingStyleArena.sizeCell}
-                                                                            onChange={e => setSizeCell(Number(e.target.value))}/>
+                <span style={{color: "white"}}>Размер ячейки: </span>
+                <input
+                    type="number"
+                    style={{width: 40}}
+                    id="sizeCell"
+                    name="sizeCell"
+                    value={settingStyleArena.sizeCell}
+                    onChange={e => setSettingStyleArena({type: "CHANGE_SIZE_CELL", payload: Number(e.target.value)})}
+                />
 
                 <br/>
                 <br/>
+
                 <label style={{color: "white"}} htmlFor="border">Цвет фона арены: </label>
-                <input type="color" onChange={e => setColorArena(e.target.value)}
-                       value={settingStyleArena.colorBackgroundArena}/>
-
-
+                <input
+                    type="color"
+                    onChange={e => setSettingStyleArena({type: "CHANGE_COLOR_ARENA", payload: e.target.value})}
+                    defaultValue={settingStyleArena.colorBackgroundArena}
+                />
             </fieldset>
             <fieldset>
-                <legend style={{color: "white"}}>Настройка игры:</legend>
-                <span style={{color: "white"}}>Ширина арены:</span> <input type="number" id="withArena" name="withArena"
-                                                                           min="2" max="20"
-                                                                           defaultValue={settingGame.width}
-                                                                           onChange={e => setWidthArena(Number(e.target.value))}/>
+                <legend style={{color: "white"}}>Настройка игры</legend>
+                <span style={{color: "white"}}>Ширина арены: </span>
+                <input
+                    type="number"
+                    style={{width: 40}}
+                    id="withArena"
+                    name="withArena"
+                    value={settingGame.width}
+                    onChange={e => setSettingGame({type: "CHANGE_WIDTH_ARENA", payload: Number(e.target.value)})}
+                />
+
                 <br/>
-                <span style={{color: "white"}}>Высота арены:</span> <input type="number" id="heightArena"
-                                                                           name="heightArena" min="2" max="20"
-                                                                           defaultValue={settingGame.height}
-                                                                           onChange={e => setHeightArena(Number(e.target.value))}/>
+
+                <span style={{color: "white"}}>Высота арены: </span>
+                <input
+                    type="number"
+                    style={{width: 40}}
+                    id="heightArena"
+                    name="heightArena"
+                    value={settingGame.height}
+                    onChange={e => setSettingGame({type: "CHANGE_HEIGHT_ARENA", payload: Number(e.target.value)})}
+                />
+
                 <br/>
-                <span style={{color: "white"}}>Скорость игры:</span> <input type="number" id="speedGame"
-                                                                            name="speedGame" min="0" max="10"
-                                                                            defaultValue={settingGame.speedMove / 10}
-                                                                            onChange={e => setSpeedGame(Number(e.target.value) * 10)}/>
+
+                <span style={{color: "white"}}>Скорость игры: </span>
+                <input
+                    type="number"
+                    style={{width: 40}}
+                    id="speedGame"
+                    name="speedGame"
+                    value={settingGame.speedMove / 10}
+                    onChange={e => setSettingGame({type: "CHANGE_SPEED", payload: Number(e.target.value) * 10})}/>
                 <br/>
 
                 <br/>
-                <span style={{color: "white"}}>Очерёдность хода:</span>
+                <span style={{color: "white"}}>Очерёдность хода: </span>
                 <br/>
                 <input
                     type="radio"
@@ -206,23 +199,43 @@ export const FormSetting = ({
                 <br/>
                 <span style={{color: "white"}}>Поведение при перемещении пикселя:</span>
                 <br/>
-                <input type="radio" name="moved" value="Default" id="default" checked={settingGame.moved == "Default"}
-                       onChange={changeMovedValue}/>
+                <input
+                    type="radio"
+                    name="moved"
+                    value="Default"
+                    id="default"
+                    checked={settingGame.moved == "Default"}
+                    onChange={changeMovedValue}
+                />
                 <label style={{color: "white"}} htmlFor="default">Обычное перемещение</label>
                 <br/>
-                <input type="radio" name="moved" value="Clone" id="clone" checked={settingGame.moved == "Clone"}
-                       onChange={changeMovedValue}/>
+                <input
+                    type="radio"
+                    name="moved"
+                    value="Clone"
+                    id="clone"
+                    checked={settingGame.moved == "Clone"}
+                    onChange={changeMovedValue}
+                />
                 <label style={{color: "white"}} htmlFor="clone">Клонировать (А это вообще может закончиться?)</label>
-
             </fieldset>
+
             <br/>
 
             <fieldset>
-                <legend style={{color: "white"}}>Настройка команд:</legend>
-                <span style={{color: "white"}}>Количество команд: </span><input type="number" id="countTeam"
-                                                                                name="countTeam" min="1" max="2"
-                                                                                defaultValue={teams.length}
-                                                                                onChange={e => setCountTeam(Number(e.target.value))}/>
+                <legend style={{color: "white"}}>Настройка команд</legend>
+                <span style={{color: "white"}}>Количество команд: </span>
+                <input
+                    type="number"
+                    style={{width: 40}}
+                    id="countTeam"
+                    name="countTeam"
+                    value={teams.length}
+                    onChange={e => setTeams({
+                        type: "CHANGE_COUNT_TEAM",
+                        payload: {countTeam: Number(e.target.value), settingGame: settingGame}
+                    })}
+                />
                 {teams.map(team =>
                     <div key={`countPixelTeam_${team.id}`}>
                         <br/>
@@ -231,11 +244,11 @@ export const FormSetting = ({
                             style={{color: `hsl(${team.color}deg 100% 50%)`}}>{team.name}</b>:</span>
                         <input
                             type="number"
+                            style={{width: 40}}
                             id={`countPixelTeam_${team.id}`}
                             name={`countPixelTeam_${team.id}`}
-                            min="1"
-                            max={settingGame.height * settingGame.width / teams.length}
-                            value={team.countPixelsStart}
+
+                            value={team.pixels.length}
                             onChange={e => setPixelTeam(team.id, Number(e.target.value))}
                         />
                         <button
@@ -243,10 +256,8 @@ export const FormSetting = ({
                         <br/>
                     </div>
                 )}
-
             </fieldset>
             <br/>
-
         </div>
     )
 }

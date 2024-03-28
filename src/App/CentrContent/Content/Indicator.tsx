@@ -1,4 +1,4 @@
-import {Team} from "../../../tools/Interface/TeamInterface";
+import {Team} from "../../../tools/Interfaces/TeamInterface";
 import React from "react";
 
 export const Indicator = ({teams} : {teams: Team[]}) => {

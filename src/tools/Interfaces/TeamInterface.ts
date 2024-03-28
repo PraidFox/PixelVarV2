@@ -11,5 +11,5 @@ export interface Team {
     name: string,
     color: number,
     pixels: Pixel[],
-    countPixelsStart: number
+    //countPixelsStart: number
 }

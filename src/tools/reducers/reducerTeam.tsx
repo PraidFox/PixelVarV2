@@ -1,18 +1,21 @@
-import {Pixel, Team} from "../Interface/TeamInterface";
-import {SettingGame} from "../Interface/SettingGameInterface";
-import {colorTeam} from "../const";
+import {Pixel, Team} from "../Interfaces/TeamInterface";
+import {SettingGame} from "../Interfaces/SettingGameInterface";
+import {colorTeam} from "../storage/const";
 import {getExterminateCloneNoWar, getExterminateCloneYesWar} from "../actionsGame";
+import {checkInterval} from "../utils";
 
 
 export type ActionTeams =
     { type: "CHANGE_COUNT_TEAM", payload: { countTeam: number, settingGame: SettingGame } }
     | { type: "CHANGE_COUNT_PIXELS_TEAM", payload: { teamId: number, countPixel: number, settingGame: SettingGame } }
     | { type: "MOVE_PIXEL", payload: { whoseMove: number, settingGame: SettingGame } }
-    // | { type: "RESET_TEAM", payload: { settingGame: SettingGame } }
     | { type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: { settingGame: SettingGame } }
     | {type: "COPY_TEAMS" | "RESET_TEAM", payload: {teams: Team[]}}
 
 export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
+
+
+
     let maxMaxId = Math.max(...state.map(team => team.pixels.map(pixel => pixel.id)).flat())
     let newTeams: Team[] = []
 
@@ -29,31 +32,21 @@ export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
             state.forEach(team => {
                     let newTeam: Team = {...team}
                     newTeam.pixels = addPixels(state.length, team.pixels.length >= maxCountPixels ? maxCountPixels : team.pixels.length, team.id, action.payload.settingGame, team.color, maxMaxId)
-                    newTeam.countPixelsStart = team.pixels.length >= maxCountPixels ? maxCountPixels : team.pixels.length
+                    //newTeam.countPixelsStart = team.pixels.length >= maxCountPixels ? maxCountPixels : team.pixels.length
                     newTeams.push(newTeam)
                 }
             )
 
             return newTeams
-        // case "RESET_TEAM":
-        //     //const defaultTeams = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
-        //     newTeams = []
-        //
-        //     state.forEach(team => {
-        //             let newTeam: Team = {...team}
-        //             newTeam.pixels = addPixels(state.length, team.countPixelsStart, team.id, action.payload.settingGame, team.color, maxMaxId)
-        //             newTeams.push(newTeam)
-        //         }
-        //     )
-        //
-        //     return newTeams
         case "CHANGE_COUNT_TEAM":
             let teams: Team[] = JSON.parse(JSON.stringify([...state]))
 
-            if (state.length > action.payload.countTeam) {
-                teams = state.filter(team => team.id < action.payload.countTeam)
+            const countTeam = checkInterval(1, 2, action.payload.countTeam)
+
+            if (state.length > countTeam) {
+                teams = state.filter(team => team.id <countTeam)
             } else {
-                for (let i = 0; i < action.payload.countTeam; i++) {
+                for (let i = 0; i < countTeam; i++) {
                     if (teams.filter(team => team.id == i).length == 0) {
                         //const colorTeam = Math.floor(Math.random() * 16777215).toString(16)
                         const color = colorTeam[i]
@@ -69,7 +62,7 @@ export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
                                 type: "solder",
                                 lvl: 1
                             }],
-                            countPixelsStart: 1,
+                            //countPixelsStart: 1,
                         })
                     }
                 }
@@ -77,12 +70,15 @@ export const reducerTeam = (state: Team[], action: ActionTeams): Team[] => {
 
             return teams
         case "CHANGE_COUNT_PIXELS_TEAM":
-            const newPixels = addPixels(state.length, action.payload.countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
+
+            const countPixel = checkInterval(1, action.payload.settingGame.height * action.payload.settingGame.width / state.length, action.payload.countPixel)
+
+            const newPixels = addPixels(state.length, countPixel, action.payload.teamId, action.payload.settingGame, state[action.payload.teamId].color, maxMaxId)
 
             return state.map(team => team.id == action.payload.teamId ? {
                 ...team,
                 pixels: newPixels,
-                countPixelsStart: action.payload.countPixel
+                //countPixelsStart: action.payload.countPixel
             } : team)
         case "MOVE_PIXEL":
             let settingGame = action.payload.settingGame

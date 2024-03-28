@@ -4,32 +4,33 @@ import React, {useEffect, useReducer, useState} from "react";
 import {reducerSettingGame} from "../tools/reducers/reducerSettingGame";
 import {reducerTeam} from "../tools/reducers/reducerTeam";
 import {reducerSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
-import {defaultSettingGame, defaultSettingStyleArena, defaultTeams, styleButton} from "../tools/const";
+import {defaultSettingGame, defaultSettingStyleArena, defaultTeams, styleButton} from "../tools/storage/const";
 import {FormSetting} from "./LeftPanel/FormSetting";
 
 export const App = () => {
 
     const [settingGame, setSettingGame] = useReducer(reducerSettingGame, defaultSettingGame)
-    const [startingTeams, setStartingTeams] = useReducer(reducerTeam, defaultTeams)
+    const [settingTeams, setSettingTeams] = useReducer(reducerTeam, defaultTeams)
     const [settingStyleArena, setSettingStyleArena] = useReducer(reducerSettingStyleArena, defaultSettingStyleArena)
     const [hiddenInformation, setHiddenInformation] = useState(true)
 
     useEffect(() => {
+        setSettingTeams({type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: {settingGame: settingGame}})
+    }, [settingGame.height, settingGame.width, settingTeams.length]);
+
+    useEffect(() => {
         localStorage.setItem("settingGame", JSON.stringify(settingGame))
     }, [settingGame]);
-
+    useEffect(() => {
+        localStorage.setItem("settingTeam", JSON.stringify(settingTeams))
+    }, [settingTeams]);
     useEffect(() => {
         localStorage.setItem("settingStyleArena", JSON.stringify(settingStyleArena))
     }, [settingStyleArena]);
 
-    useEffect(() => {
-        localStorage.setItem("settingTeam", JSON.stringify(startingTeams))
-    }, [startingTeams]);
-
     return (
         <div style={{height: "100vh", display: "flex", justifyContent: "center", gap: "40px", alignItems: "center"}}>
-
-            <div style={{position: "absolute", left: 10, top: 10}} >
+            <div style={{position: "absolute", left: 10, top: 10}}>
                 <span style={{color: "white", fontSize: "30px"}}><b>PixelGame</b></span>
                 <br/>
                 <button
@@ -38,28 +39,26 @@ export const App = () => {
                 </button>
             </div>
 
-                {hiddenInformation &&
-                    <FormSetting
-                        teams={startingTeams}
-                        settingGame={settingGame}
-                        settingStyleArena={settingStyleArena}
-
-                        setTeams={setStartingTeams}
-                        setSettingGame={setSettingGame}
-                        setSettingStyleArena={setSettingStyleArena}
-                    />
-                }
-
-                <MainContentGame
-                    teams={startingTeams}
+            {hiddenInformation &&
+                <FormSetting
+                    teams={settingTeams}
                     settingGame={settingGame}
                     settingStyleArena={settingStyleArena}
-                    hiddenInformation={hiddenInformation}
-                />
 
-                {hiddenInformation &&
-                    <LocalStatistics/>
-                }
+                    setTeams={setSettingTeams}
+                    setSettingGame={setSettingGame}
+                    setSettingStyleArena={setSettingStyleArena}
+                />
+            }
+
+            <MainContentGame
+                teams={settingTeams}
+                settingGame={settingGame}
+                settingStyleArena={settingStyleArena}
+                hiddenInformation={hiddenInformation}
+            />
+
+            {hiddenInformation && <LocalStatistics/>}
 
         </div>
     )

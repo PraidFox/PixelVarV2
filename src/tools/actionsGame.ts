@@ -1,4 +1,4 @@
-import {Pixel, Team} from "./Interface/TeamInterface";
+import {Pixel, Team} from "./Interfaces/TeamInterface";
 
 
 export const getExterminateCloneNoWar = (teamWalks: Team, newIndex: number, indexPixel: number, movedPixel: Pixel, maxMaxId: number) => {

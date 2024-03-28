@@ -1,5 +1,5 @@
 import React from "react"
-import {Team} from "../../../tools/Interface/TeamInterface";
+import {Team} from "../../../tools/Interfaces/TeamInterface";
 
 export const StatisticsCurrentGame = ({teams, countSteps, time} : {teams: Team[], countSteps: number, time: number}) => {
 

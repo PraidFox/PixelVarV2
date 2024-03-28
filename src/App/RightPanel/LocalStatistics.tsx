@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {LocalStatisticsInfo} from "../../tools/Interface/OtherInterface";
+import {LocalStatisticsInfo} from "../../tools/Interfaces/OtherInterface";
 
 export const LocalStatistics = () => {
 
