@@ -1,21 +1,24 @@
 import React, {useEffect, useState} from "react";
 import {LocalStatisticsInfo} from "../../tools/Interfaces/OtherInterface";
 
-export const LocalStatistics = () => {
+export const LocalStatistics = ({updateLocalStatistic, setUpdateLocalStatistic}: {updateLocalStatistic: boolean, setUpdateLocalStatistic: (bool: boolean) => void}) => {
 
     const [localStatistics, setLocalStatistics] = useState<LocalStatisticsInfo>()
 
     useEffect(() => {
-        const defaultLocalStatistics: LocalStatisticsInfo = localStorage.getItem("localStatisticsInfo") ? JSON.parse(localStorage.getItem("localStatisticsInfo") as string) : {
-            countGames: 0,
-            totalTime: 0,
-            totalSteps: 0,
-            countWinTeamOne: 0,
-            countWinTeamTwo: 0
-        }
+        if(updateLocalStatistic){
+            const defaultLocalStatistics: LocalStatisticsInfo = localStorage.getItem("localStatisticsInfo") ? JSON.parse(localStorage.getItem("localStatisticsInfo") as string) : {
+                countGames: 0,
+                totalTime: 0,
+                totalSteps: 0,
+                countWinTeamOne: 0,
+                countWinTeamTwo: 0
+            }
 
-        setLocalStatistics(defaultLocalStatistics)
-    }, []);
+            setLocalStatistics(defaultLocalStatistics)
+            setUpdateLocalStatistic(false)
+        }
+    }, [updateLocalStatistic]);
 
 return (
     <div style={{width: "25%"}}>

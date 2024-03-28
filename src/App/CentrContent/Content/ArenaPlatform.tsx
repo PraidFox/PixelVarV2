@@ -40,7 +40,6 @@ export const ArenaPlatform = ({settingGame, teams, settingStyleArena}: {
                     backgroundColor: settingStyleArena.colorBackgroundArena
                 }}
             >
-                {Math.random()}
                 {settingStyleArena.infoIndex ? index + 1 : ''}
             </div>
         }

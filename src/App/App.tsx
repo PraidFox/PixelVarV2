@@ -13,6 +13,7 @@ export const App = () => {
     const [settingTeams, setSettingTeams] = useReducer(reducerTeam, defaultTeams)
     const [settingStyleArena, setSettingStyleArena] = useReducer(reducerSettingStyleArena, defaultSettingStyleArena)
     const [hiddenInformation, setHiddenInformation] = useState(true)
+    const [updateLocalStatistic, setUpdateLocalStatistic] = useState(true)
 
     useEffect(() => {
         setSettingTeams({type: "CHECK_MAX_COUNT_PIXELS_TEAM", payload: {settingGame: settingGame}})
@@ -56,9 +57,10 @@ export const App = () => {
                 settingGame={settingGame}
                 settingStyleArena={settingStyleArena}
                 hiddenInformation={hiddenInformation}
+                setUpdateLocalStatistic={setUpdateLocalStatistic}
             />
 
-            {hiddenInformation && <LocalStatistics/>}
+            {hiddenInformation && <LocalStatistics updateLocalStatistic={updateLocalStatistic} setUpdateLocalStatistic={setUpdateLocalStatistic}/>}
 
         </div>
     )
