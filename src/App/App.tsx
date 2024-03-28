@@ -6,6 +6,8 @@ import {reducerTeam} from "../tools/reducers/reducerTeam";
 import {reducerSettingStyleArena} from "../tools/reducers/reduserSettingStyleArena";
 import {defaultSettingGame, defaultSettingStyleArena, defaultTeams, styleButton} from "../tools/storage/const";
 import {FormSetting} from "./LeftPanel/FormSetting";
+import {LocalStatisticsProvider} from "./Context/LocalStatistics";
+
 export const App = () => {
 
     const [settingGame, setSettingGame] = useReducer(reducerSettingGame, defaultSettingGame)
@@ -50,17 +52,20 @@ export const App = () => {
                     setSettingStyleArena={setSettingStyleArena}
                 />
             }
+            <LocalStatisticsProvider>
+                <>
+                    <MainContentGame
+                        teams={settingTeams}
+                        settingGame={settingGame}
+                        settingStyleArena={settingStyleArena}
+                        hiddenInformation={hiddenInformation}
+                        setUpdateLocalStatistic={setUpdateLocalStatistic}
+                    />
 
-            <MainContentGame
-                teams={settingTeams}
-                settingGame={settingGame}
-                settingStyleArena={settingStyleArena}
-                hiddenInformation={hiddenInformation}
-                setUpdateLocalStatistic={setUpdateLocalStatistic}
-            />
-
-            {hiddenInformation && <LocalStatistics updateLocalStatistic={updateLocalStatistic} setUpdateLocalStatistic={setUpdateLocalStatistic}/>}
-
+                    {hiddenInformation && <LocalStatistics updateLocalStatistic={updateLocalStatistic}
+                                                           setUpdateLocalStatistic={setUpdateLocalStatistic}/>}
+                </>
+            </LocalStatisticsProvider>
         </div>
     )
 }

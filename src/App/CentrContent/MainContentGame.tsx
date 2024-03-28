@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useRef, useState} from "react";
+import React, {useContext, useEffect, useReducer, useRef, useState} from "react";
 import {SettingGame} from "../../tools/Interfaces/SettingGameInterface";
 import {ArenaPlatform} from "./Content/ArenaPlatform";
 import {reducerTeam} from "../../tools/reducers/reducerTeam";
@@ -8,6 +8,7 @@ import {LocalStatisticsInfo, SettingStyleArena} from "../../tools/Interfaces/Oth
 import {Indicator} from "./Content/Indicator";
 import {styleButton} from "../../tools/storage/const";
 import {UtilsLocalStorage} from "../../tools/utilsLocalStorage";
+import {LocalStatisticsContext} from "../Context/LocalStatistics";
 
 
 
@@ -36,6 +37,8 @@ const MainContentGame = ({
     const whoseMove = useRef(0);
     const intervalId = useRef<NodeJS.Timeout>();
     const checkLostTeam = useRef(false);
+
+    const {updateLocalStatistics, updateLocalStatisticCountGame} = useContext(LocalStatisticsContext)
 
     useEffect(() => {
         setCurrentTeams({type: "COPY_TEAMS", payload: {teams: teams}})
@@ -86,12 +89,13 @@ const MainContentGame = ({
                 setTime(r => r + 1)
             }, 1000)
 
-            UtilsLocalStorage.updateLocalStatisticCountGame()
+            //UtilsLocalStorage.updateLocalStatisticCountGame()
+            updateLocalStatisticCountGame()
 
         } else {
             if (countSteps > 0) {
-
-                UtilsLocalStorage.updateLocalStatistics(time, countSteps, checkLostTeam, currentTeams)
+                //UtilsLocalStorage.updateLocalStatistics(time, countSteps, checkLostTeam, currentTeams)
+                updateLocalStatistics(time, countSteps, checkLostTeam.current, currentTeams)
 
                 clearInterval(intervalId.current)
             }
@@ -102,7 +106,8 @@ const MainContentGame = ({
 
 
     const resetGame = () => {
-        UtilsLocalStorage.updateLocalStatistics(time, countSteps, checkLostTeam, currentTeams)
+        //UtilsLocalStorage.updateLocalStatistics(time, countSteps, checkLostTeam, currentTeams)
+       updateLocalStatistics(time, countSteps, checkLostTeam.current, currentTeams)
 
         setUpdateLocalStatistic(true)
         setStartedGame(false)
